@@ -2,10 +2,12 @@
 
 #include "CMapZones.h"
 
-static int _stoi(const char *str, int *res) { // returns the number of consumed characters
+static int _stoi(const char *str, int *res) // returns the number of consumed characters
+{
     int consumed = 0;
     *res = 0;
-    while (*str >= '0' && *str <= '9') {
+    while (*str >= '0' && *str <= '9')
+    {
         *res *= 10;
         *res += *str - '0';
         str++;
@@ -15,7 +17,8 @@ static int _stoi(const char *str, int *res) { // returns the number of consumed 
 }
 
 template <typename T>
-static void resize(ke::Vector<T> &v, size_t size) {
+static void resize(ke::Vector<T> &v, size_t size)
+{
     if (v.length() < size)
         v.resize(size);
 }
@@ -24,26 +27,31 @@ SH_DECL_MANUALHOOK1_void(StartTouch, 0, 0, 0, CBaseEntity*);
 SH_DECL_MANUALHOOK1_void(Touch, 0, 0, 0, CBaseEntity*);
 SH_DECL_MANUALHOOK1_void(EndTouch, 0, 0, 0, CBaseEntity*);
 
-CBaseZone::CBaseZone(CBaseEntity *pEntity, int track) : m_pEntity(pEntity), m_iTrack(track) {
+CBaseZone::CBaseZone(CBaseEntity *pEntity, int track) : m_pEntity(pEntity), m_iTrack(track)
+{
     SH_ADD_MANUALHOOK_MEMFUNC(StartTouch, m_pEntity, this, &CBaseZone::StartTouch, true);
     SH_ADD_MANUALHOOK_MEMFUNC(Touch, m_pEntity, this, &CBaseZone::Touch, true);
     SH_ADD_MANUALHOOK_MEMFUNC(EndTouch, m_pEntity, this, &CBaseZone::EndTouch, true);
 }
 
-CBaseZone::~CBaseZone() {
+CBaseZone::~CBaseZone()
+{
     SH_REMOVE_MANUALHOOK_MEMFUNC(StartTouch, m_pEntity, this, &CBaseZone::StartTouch, true);
     SH_REMOVE_MANUALHOOK_MEMFUNC(Touch, m_pEntity, this, &CBaseZone::Touch, true);
     SH_REMOVE_MANUALHOOK_MEMFUNC(EndTouch, m_pEntity, this, &CBaseZone::EndTouch, true);
 }
 
-CBaseEntity *CBaseZone::GetBaseEntity() {
+CBaseEntity *CBaseZone::GetBaseEntity()
+{
     return m_pEntity;
 }
 
-CStartZone::CStartZone(CBaseEntity *pEntity, int track) : CBaseZone(pEntity, track) {
+CStartZone::CStartZone(CBaseEntity *pEntity, int track) : CBaseZone(pEntity, track)
+{
 }
 
-void CStartZone::StartTouch(CBaseEntity *pOther) {
+void CStartZone::StartTouch(CBaseEntity *pOther)
+{
     smutils->LogMessage(myself, "CStartZone::StartTouch");
     int client = gamehelpers->EntityToBCompatRef(pOther);
 
@@ -55,10 +63,12 @@ void CStartZone::StartTouch(CBaseEntity *pOther) {
     gamehelpers->TextMsg(client, TEXTMSG_DEST_CHAT, msg);
 }
 
-CEndZone::CEndZone(CBaseEntity *pEntity, int track) : CBaseZone(pEntity, track) {
+CEndZone::CEndZone(CBaseEntity *pEntity, int track) : CBaseZone(pEntity, track)
+{
 }
 
-void CEndZone::StartTouch(CBaseEntity *pOther) {
+void CEndZone::StartTouch(CBaseEntity *pOther)
+{
     smutils->LogMessage(myself, "CEndZone::StartTouch");
     int client = gamehelpers->EntityToBCompatRef(pOther);
 
@@ -70,10 +80,12 @@ void CEndZone::StartTouch(CBaseEntity *pOther) {
     gamehelpers->TextMsg(client, TEXTMSG_DEST_CHAT, msg);
 }
 
-CCheckpointZone::CCheckpointZone(CBaseEntity *pEntity, int track, int cpnum) : CBaseZone(pEntity, track), m_iIndex(cpnum) {
+CCheckpointZone::CCheckpointZone(CBaseEntity *pEntity, int track, int cpnum) : CBaseZone(pEntity, track), m_iIndex(cpnum)
+{
 }
 
-void CCheckpointZone::StartTouch(CBaseEntity *pOther) {
+void CCheckpointZone::StartTouch(CBaseEntity *pOther)
+{
     smutils->LogMessage(myself, "CCheckpointZone::StartTouch");
     int client = gamehelpers->EntityToBCompatRef(pOther);
 
@@ -85,8 +97,10 @@ void CCheckpointZone::StartTouch(CBaseEntity *pOther) {
     gamehelpers->TextMsg(client, TEXTMSG_DEST_CHAT, msg);
 }
 
-bool CMapZones::RegisterZone(CBaseEntity *pEntity, ZoneType type, int track, int cpnum) {
-    switch (type) {
+bool CMapZones::RegisterZone(CBaseEntity *pEntity, ZoneType type, int track, int cpnum)
+{
+    switch (type)
+    {
         case ZoneType::START:
             resize(m_vStartZones, track + 1);
 
@@ -120,32 +134,44 @@ bool CMapZones::RegisterZone(CBaseEntity *pEntity, ZoneType type, int track, int
     return false;
 }
 
-bool CMapZones::RegisterZone(CBaseEntity *pEntity, const char *classname) {
+bool CMapZones::RegisterZone(CBaseEntity *pEntity, const char *classname)
+{
     classname += 9; // mod_zone_
-    if (strncmp(classname, "bonus_", 6) == 0) {
+    if (strncmp(classname, "bonus_", 6) == 0)
+    {
         classname += 6;
         int track;
         classname += _stoi(classname, &track);
-        if (*classname && *++classname) { // skip the '_', also check that the string didn't end
+        if (*classname && *++classname)
+        { // skip the '_', also check that the string didn't end
             return RegisterZone(pEntity, classname, track);
         }
-    } else {
+    }
+    else
+    {
         return RegisterZone(pEntity, classname, 0);
     }
 
     return false;
 }
 
-bool CMapZones::RegisterZone(CBaseEntity *pEntity, const char *identifier, int track) {
-    if (strcmp(identifier, "start") == 0) {
+bool CMapZones::RegisterZone(CBaseEntity *pEntity, const char *identifier, int track)
+{
+    if (strcmp(identifier, "start") == 0)
+    {
         return RegisterZone(pEntity, ZoneType::START, track);
-    } else if (strcmp(identifier, "end") == 0) {
+    }
+    else if (strcmp(identifier, "end") == 0)
+    {
         return RegisterZone(pEntity, ZoneType::END, track);
-    } else if (strncmp(identifier, "checkpoint_", 11) == 0) {
+    }
+    else if (strncmp(identifier, "checkpoint_", 11) == 0)
+    {
         identifier += 11;
         int cpnum;
         identifier += _stoi(identifier, &cpnum);
-        if (!(*identifier)) { // ensure that the string ended
+        if (!(*identifier))
+        { // ensure that the string ended
             return RegisterZone(pEntity, ZoneType::CHECKPOINT, track, cpnum);
         }
     }
@@ -153,36 +179,44 @@ bool CMapZones::RegisterZone(CBaseEntity *pEntity, const char *identifier, int t
     return false;
 }
 
-void CMapZones::PrintZones() {
+void CMapZones::PrintZones()
+{
     smutils->LogMessage(myself, "----------------");
     smutils->LogMessage(myself, "Listing mapzones");
     smutils->LogMessage(myself, "----------------");
 
     smutils->LogMessage(myself, "Start Zones:");
-    for (size_t i = 0; i < m_vStartZones.length(); i++) {
+    for (size_t i = 0; i < m_vStartZones.length(); i++)
+    {
         smutils->LogMessage(myself, "%d:%p", i, m_vStartZones[i]->GetBaseEntity());
     }
 
     smutils->LogMessage(myself, "End Zones:");
-    for (size_t i = 0; i < m_vEndZones.length(); i++) {
+    for (size_t i = 0; i < m_vEndZones.length(); i++)
+    {
         smutils->LogMessage(myself, "%d:%p", i, m_vEndZones[i]->GetBaseEntity());
     }
 
     smutils->LogMessage(myself, "Checkpoint Zones:");
-    for (size_t i = 0; i < m_vCheckpointZones.length(); i++) {
+    for (size_t i = 0; i < m_vCheckpointZones.length(); i++)
+    {
         for (size_t j = 0; j < m_vCheckpointZones[i].length(); j++)
         smutils->LogMessage(myself, "%d:%d:%p", i, j, m_vCheckpointZones[i][j]->GetBaseEntity());
     }
 }
 
 #define RECONFIGURE(hook)                                                   \
-    if (gameconf[GAMECONF_SDKHOOKS]->GetOffset(#hook, &offset)) {           \
-        SH_MANUALHOOK_RECONFIGURE(hook, offset, 0, 0);                     \
-    } else {                                                                \
+    if (gameconf[GAMECONF_SDKHOOKS]->GetOffset(#hook, &offset))             \
+    {                                                                       \
+        SH_MANUALHOOK_RECONFIGURE(hook, offset, 0, 0);                      \
+    }                                                                       \
+    else                                                                    \
+    {                                                                       \
         smutils->LogError(myself, "Couldn't find " #hook " offset.");       \
     }
 
-void CMapZones::ReconfigureHooks() {
+void CMapZones::ReconfigureHooks()
+{
     int offset;
     RECONFIGURE(StartTouch);
     RECONFIGURE(Touch);

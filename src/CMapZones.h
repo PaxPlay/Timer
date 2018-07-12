@@ -4,13 +4,15 @@
 #include <amtl/am-vector.h>
 #include "extension.h"
 
-enum class ZoneType {
+enum class ZoneType
+{
     START,
     END,
     CHECKPOINT
 };
 
-class CBaseZone {
+class CBaseZone
+{
 public:
     CBaseZone(CBaseEntity *pEntity, int track);
     ~CBaseZone();
@@ -25,21 +27,24 @@ protected:
     int m_iTrack;
 };
 
-class CStartZone : public CBaseZone {
+class CStartZone : public CBaseZone
+{
 public:
     CStartZone(CBaseEntity *pEntity, int track);
 
     void StartTouch(CBaseEntity *pOther) override;
 };
 
-class CEndZone : public CBaseZone {
+class CEndZone : public CBaseZone
+{
 public:
     CEndZone(CBaseEntity *pEntity, int track);
 
     void StartTouch(CBaseEntity *pOther) override;
 };
 
-class CCheckpointZone : public CBaseZone {
+class CCheckpointZone : public CBaseZone
+{
 public:
     CCheckpointZone(CBaseEntity *pEntity, int track, int cpnum);
 
@@ -48,7 +53,8 @@ private:
     int m_iIndex;
 };
 
-class CMapZones {
+class CMapZones
+{
 public:
     void PrintZones();
 

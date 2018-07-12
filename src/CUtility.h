@@ -3,7 +3,8 @@
 
 #include "extension.h"
 
-class CUtility {
+class CUtility
+{
 public:
     /**
      * Formats a string. This function wraps IPhraseCollection::FormatString and is thus needed for formatting translations.

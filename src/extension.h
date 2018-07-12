@@ -9,7 +9,8 @@
 #include "smsdk_ext.h"
 
 /* GameConfs */
-enum {
+enum
+{
     GAMECONF_SDKTOOLS,
     GAMECONF_SDKHOOKS,
     GAMECONF_TOTAL
@@ -27,7 +28,8 @@ extern IPhraseCollection *phrases;
  * @brief Sample implementation of the SDK Extension.
  * Note: Uncomment one of the pre-defined virtual functions in order to use it.
  */
-class TimerExtension : public SDKExtension {
+class TimerExtension : public SDKExtension
+{
 public:
     /**
      * @brief This is called after the initial loading sequence has been processed.

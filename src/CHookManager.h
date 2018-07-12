@@ -7,7 +7,8 @@
 #include <shareddefs.h>
 #include <usercmd.h>
 
-class CHookManager : public ISMEntityListener, public IClientListener {
+class CHookManager : public ISMEntityListener, public IClientListener
+{
 public:
     void InitHooks();
     void RemoveHooks();

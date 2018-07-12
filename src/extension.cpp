@@ -15,7 +15,8 @@ IGameConfig *gameconf[GAMECONF_TOTAL];
 
 static CRootConsoleCmds rcmds;
 
-const char *gameconffiles[GAMECONF_TOTAL] = {
+const char *gameconffiles[GAMECONF_TOTAL] =
+{
         "sdktools.games/game.cstrike",
         "sdkhooks.games/game.cstrike"
 };
@@ -25,11 +26,13 @@ const char *gameconffiles[GAMECONF_TOTAL] = {
  * @brief Implement core Timer extension class here.
  */
 
-bool TimerExtension::SDK_OnLoad(char *error, size_t maxlength, bool late) {
+bool TimerExtension::SDK_OnLoad(char *error, size_t maxlength, bool late)
+{
     sharesys->AddDependency(myself, "sdkhooks.ext", true, true);
 
     phrases = translator->CreatePhraseCollection();
-    if (!phrases) {
+    if (!phrases)
+    {
         smutils->Format(error, maxlength, "Cannot create Phrase Collection");
         return false;
     }
@@ -38,7 +41,8 @@ bool TimerExtension::SDK_OnLoad(char *error, size_t maxlength, bool late) {
 
     rootconsole->AddRootConsoleCommand3("timer", "Timer commands", &rcmds);
 
-    for (int i = 0; i < GAMECONF_TOTAL; i++) {
+    for (int i = 0; i < GAMECONF_TOTAL; i++)
+    {
         if (!gameconfs->LoadGameConfigFile(gameconffiles[i], &gameconf[i], error, maxlength))
             return false;
     }
@@ -48,39 +52,46 @@ bool TimerExtension::SDK_OnLoad(char *error, size_t maxlength, bool late) {
     return true;
 }
 
-void TimerExtension::SDK_OnUnload() {
+void TimerExtension::SDK_OnUnload()
+{
     for (auto &d : gameconf)
         gameconfs->CloseGameConfigFile(d);
 
     phrases->Destroy();
 
-    if (QueryRunning(nullptr, 0)) {
+    if (QueryRunning(nullptr, 0))
+    {
         sdkhooks->RemoveEntityListener(hooks);
     }
 }
 
-void TimerExtension::SDK_OnAllLoaded() {
+void TimerExtension::SDK_OnAllLoaded()
+{
     SM_GET_LATE_IFACE(SDKHOOKS, sdkhooks);
 
     playerhelpers->AddClientListener(hooks);
 
-    if (QueryRunning(nullptr, 0)) {
+    if (QueryRunning(nullptr, 0))
+    {
         sdkhooks->AddEntityListener(hooks);
     }
 }
 
-void TimerExtension::SDK_OnPauseChange(bool paused) {
+void TimerExtension::SDK_OnPauseChange(bool paused)
+{
 
     SDKExtension::SDK_OnPauseChange(paused);
 }
 
-bool TimerExtension::QueryRunning(char *error, size_t maxlength) {
+bool TimerExtension::QueryRunning(char *error, size_t maxlength)
+{
     SM_CHECK_IFACE(SDKHOOKS, sdkhooks);
 
     return true;
 }
 
-bool TimerExtension::SDK_OnMetamodLoad(ISmmAPI *ismm, char *error, size_t maxlen, bool late) {
+bool TimerExtension::SDK_OnMetamodLoad(ISmmAPI *ismm, char *error, size_t maxlen, bool late)
+{
 
     /* Get Interfaces */
     GET_V_IFACE_CURRENT(GetServerFactory, gameclients,  IServerGameClients, INTERFACEVERSION_SERVERGAMECLIENTS);

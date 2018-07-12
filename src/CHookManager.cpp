@@ -5,15 +5,18 @@
 #include "CMapZones.h"
 
 
-void CHookManager::InitHooks() {
+void CHookManager::InitHooks()
+{
 
 }
 
-void CHookManager::RemoveHooks() {
+void CHookManager::RemoveHooks()
+{
 
 }
 
-void CheckTrigger(void *userp) {
+void CheckTrigger(void *userp)
+{
     auto *pEntity = reinterpret_cast<CBaseEntity *>(userp);
 
     const char *name = *util->EntPropData<const char *>(pEntity, "m_iName");
@@ -25,13 +28,16 @@ void CheckTrigger(void *userp) {
     }
 }
 
-void CHookManager::OnEntityCreated(CBaseEntity *pEntity, const char *classname) {
-    if (strcmp(classname, "trigger_multiple") == 0) {
+void CHookManager::OnEntityCreated(CBaseEntity *pEntity, const char *classname)
+{
+    if (strcmp(classname, "trigger_multiple") == 0)
+    {
         smutils->AddFrameAction(CheckTrigger, pEntity);
     }
 }
 
-void CHookManager::OnClientPutInServer(int client) {
+void CHookManager::OnClientPutInServer(int client)
+{
     edict_t *pEdict = gamehelpers->EdictOfIndex(client);
     if (!pEdict)
         return;

@@ -2,7 +2,8 @@
 
 #include "CUtility.h"
 
-int CUtility::Format(char *buffer, const size_t maxlength, const int argc, const char *format, ...) {
+int CUtility::Format(char *buffer, const size_t maxlength, const int argc, const char *format, ...)
+{
     void *params[argc];
     size_t written;
     const char *err;
@@ -28,7 +29,8 @@ int CUtility::Format(char *buffer, const size_t maxlength, const int argc, const
     return 0;
 }
 
-int CUtility::EntPropDataOffset(CBaseEntity *pEntity, const char *prop) {
+int CUtility::EntPropDataOffset(CBaseEntity *pEntity, const char *prop)
+{
     if (!pEntity || !prop || !prop[0])
         return 0;
 

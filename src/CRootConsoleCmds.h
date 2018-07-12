@@ -3,7 +3,8 @@
 
 #include "extension.h"
 
-class CRootConsoleCmds : public IRootConsoleCommand {
+class CRootConsoleCmds : public IRootConsoleCommand
+{
 public:
     void OnRootConsoleCommand(const char *cmdname, const ICommandArgs *args) override;
 };

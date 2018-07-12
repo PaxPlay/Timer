@@ -5,11 +5,13 @@
 
 // TODO: a lot
 
-class CTimerClient {
+class CTimerClient
+{
 
 };
 
-class CTimerClients {
+class CTimerClients
+{
 
 private:
     CTimerClient *m_Clients[SM_MAXPLAYERS];
