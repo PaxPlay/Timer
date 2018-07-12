@@ -8,6 +8,7 @@ builder.SetBuildFolder('package')
 # Add any folders you need to this list
 folder_list = [
   'addons/sourcemod/extensions',
+  'addons/sourcemod/translations',
   #'addons/sourcemod/scripting/include',
   #'addons/sourcemod/gamedata',
   #'addons/sourcemod/configs',
@@ -27,6 +28,11 @@ def CopyFiles(src, dest, files):
   for source_file in files:
     source_path = os.path.join(builder.sourcePath, src, source_file)
     builder.AddCopy(source_path, dest_entry)
+
+# Translation files 
+CopyFiles('translations', 'addons/sourcemod/translations',
+  [ 'Timer.phrases.txt', ]
+)
 
 # Include files 
 #CopyFiles('include', 'addons/sourcemod/scripting/include',

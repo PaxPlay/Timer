@@ -1,0 +1,8 @@
+"Phrases"
+{
+    "Test translation"
+    {
+        "#format"       "{1:s}"
+        "en"            "Test translation, have a string: {1}"
+    }
+}

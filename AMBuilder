@@ -11,6 +11,12 @@ projectName = 'Timer'
 # smsdk_ext.cpp will be automatically added later
 sourceFiles = [
   'extension.cpp',
+  'CHookManager.cpp',
+  'CVFuncs.cpp',
+  'CUtility.cpp',
+  'CMapZones.cpp',
+  'CRootConsoleCmds.cpp',
+  'CTimerClients.cpp',
 ]
 
 includeDirectorys = [
