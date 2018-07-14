@@ -3,6 +3,8 @@
 
 #include "extension.h"
 
+#include <cstdarg>
+
 class CUtility
 {
 public:
@@ -15,7 +17,36 @@ public:
      * @param ...           Format arguments. For non string types pass a pointer to the object.
      * @return              Number of bytes written.
      */
-    int Format(char *buffer, const size_t maxlength, const int argc, const char *format, ...);
+    int Format(char *buffer, const size_t maxlength, const char *format, const int argc = 0, ...);
+
+    /**
+     * Formats a string. This function wraps IPhraseCollection::FormatString and is thus needed for formatting translations.
+     * @param buffer        Buffer to write to.
+     * @param maxlength     Maximum amount of bytes to write.
+     * @param argc          Amount of formatting arguments provided to the function.
+     * @param format        Format specifier string.
+     * @param va_args       Format argument list. For non string types pass a pointer to the object.
+     * @return              Number of bytes written.
+     */
+    int FormatVA(char *buffer, const size_t maxlength, const char *format, const int argc = 0, va_list va_args = va_list());
+
+    /**
+     * Prints to the chat. Wraps FormatVA and thus IPhraseCollection::FormatString.
+     * @param client        Client index.
+     * @param argc          Number of formatting arguments specified.
+     * @param format        Format specifier string.
+     * @param ...           Format arguments. For non string types pass a pointer to the object.
+     */
+    void PrintToChat(int client, const char *format, const int argc = 0, ...);
+
+    /**
+     * Prints to the chat. Wraps FormatVA and thus IPhraseCollection::FormatString.
+     * @param client        Client index.
+     * @param argc          Number of formatting arguments specified.
+     * @param format        Format specifier string.
+     * @param va_args       Format argument list. For non string types pass a pointer to the object.
+     */
+    void PrintToChatVA(int client, const char *format, const int argc = 0, va_list va_args = va_list());
 
     /**
      * Receives a pointer to an entities prop data field.

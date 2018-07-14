@@ -3,6 +3,7 @@
 #include "CHookManager.h"
 #include "CUtility.h"
 #include "CMapZones.h"
+#include "CTimerClients.h"
 
 
 void CHookManager::InitHooks()
@@ -36,21 +37,28 @@ void CHookManager::OnEntityCreated(CBaseEntity *pEntity, const char *classname)
     }
 }
 
-void CHookManager::OnClientPutInServer(int client)
+void CHookManager::OnClientConnected(int client)
 {
-    edict_t *pEdict = gamehelpers->EdictOfIndex(client);
-    if (!pEdict)
-        return;
-
-    IServerUnknown *pUnknown = pEdict->GetUnknown();
-    if (!pUnknown)
-        return;
-
-    CBaseEntity *pEntity = pUnknown->GetBaseEntity();
-    if (!pEntity)
-        return;
+    if (client)
+        timerclients->CreateClient(client);
 }
 
+void CHookManager::OnClientPutInServer(int client)
+{
+    if (!client)
+        return;
+
+    CTimerClient *pClient = timerclients->GetClient(client);
+
+    if (pClient)
+        pClient->OnClientPutInServer();
+}
+
+void CHookManager::OnClientDisconnected(int client)
+{
+    if (client)
+        timerclients->RemoveClient(client);
+}
 
 static CHookManager _hooks;
 CHookManager *hooks = &_hooks;

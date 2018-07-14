@@ -32,7 +32,8 @@ class CStartZone : public CBaseZone
 public:
     CStartZone(CBaseEntity *pEntity, int track);
 
-    void StartTouch(CBaseEntity *pOther) override;
+    void Touch(CBaseEntity *pOther) override;
+    void EndTouch(CBaseEntity *pOther) override;
 };
 
 class CEndZone : public CBaseZone

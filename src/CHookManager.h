@@ -18,10 +18,10 @@ public:
 
     /* IClientListener */
     //bool InterceptClientConnect(int client, char *error, size_t maxlength) override;
-    //void OnClientConnected(int client) override;
+    void OnClientConnected(int client) override;
     void OnClientPutInServer(int client) override;
     //void OnClientDisconnecting(int client) override;
-    //void OnClientDisconnected(int client) override;
+    void OnClientDisconnected(int client) override;
     //void OnClientAuthorized(int client, const char *authstring) override;
     //void OnServerActivated(int max_clients) override;
     //bool OnClientPreAdminCheck(int client) override;

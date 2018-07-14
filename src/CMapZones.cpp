@@ -1,6 +1,8 @@
 #include <amtl/am-string.h>
 
 #include "CMapZones.h"
+#include "CTimerClients.h"
+#include "CUtility.h"
 
 static int _stoi(const char *str, int *res) // returns the number of consumed characters
 {
@@ -50,17 +52,26 @@ CStartZone::CStartZone(CBaseEntity *pEntity, int track) : CBaseZone(pEntity, tra
 {
 }
 
-void CStartZone::StartTouch(CBaseEntity *pOther)
+void CStartZone::Touch(CBaseEntity *pOther)
 {
-    smutils->LogMessage(myself, "CStartZone::StartTouch");
-    int client = gamehelpers->EntityToBCompatRef(pOther);
+    CTimerClient *client = timerclients->GetClient(pOther);
+    if (!client)
+        return;
+    
+    int flags = *util->EntPropData<int>(pOther, "m_fFlags");
+    if (!(flags & FL_ONGROUND))
+        client->StartTimer(m_iTrack);
+    else
+        client->StopTimer(false, m_iTrack);
+}
 
+void CStartZone::EndTouch(CBaseEntity *pOther)
+{
+    CTimerClient *client = timerclients->GetClient(pOther);
     if (!client)
         return;
 
-    char msg[256];
-    smutils->Format(msg, 256, "CStartZone::StartTouch %d", m_iTrack);
-    gamehelpers->TextMsg(client, TEXTMSG_DEST_CHAT, msg);
+    client->StartTimer(m_iTrack);
 }
 
 CEndZone::CEndZone(CBaseEntity *pEntity, int track) : CBaseZone(pEntity, track)
@@ -69,15 +80,11 @@ CEndZone::CEndZone(CBaseEntity *pEntity, int track) : CBaseZone(pEntity, track)
 
 void CEndZone::StartTouch(CBaseEntity *pOther)
 {
-    smutils->LogMessage(myself, "CEndZone::StartTouch");
-    int client = gamehelpers->EntityToBCompatRef(pOther);
-
+    CTimerClient *client = timerclients->GetClient(pOther);
     if (!client)
         return;
 
-    char msg[256];
-    smutils->Format(msg, 256, "CEndZone::StartTouch %d", m_iTrack);
-    gamehelpers->TextMsg(client, TEXTMSG_DEST_CHAT, msg);
+    client->StopTimer(true, m_iTrack);
 }
 
 CCheckpointZone::CCheckpointZone(CBaseEntity *pEntity, int track, int cpnum) : CBaseZone(pEntity, track), m_iIndex(cpnum)
@@ -86,15 +93,11 @@ CCheckpointZone::CCheckpointZone(CBaseEntity *pEntity, int track, int cpnum) : C
 
 void CCheckpointZone::StartTouch(CBaseEntity *pOther)
 {
-    smutils->LogMessage(myself, "CCheckpointZone::StartTouch");
-    int client = gamehelpers->EntityToBCompatRef(pOther);
-
+    CTimerClient *client = timerclients->GetClient(pOther);
     if (!client)
         return;
 
-    char msg[256];
-    smutils->Format(msg, 256, "CCheckpointZone::StartTouch %d:%d", m_iTrack, m_iIndex);
-    gamehelpers->TextMsg(client, TEXTMSG_DEST_CHAT, msg);
+    client->CheckpointReached(m_iTrack, m_iIndex);
 }
 
 bool CMapZones::RegisterZone(CBaseEntity *pEntity, ZoneType type, int track, int cpnum)

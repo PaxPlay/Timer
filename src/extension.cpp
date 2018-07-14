@@ -4,6 +4,7 @@
 #include "CHookManager.h"
 #include "CRootConsoleCmds.h"
 #include "CMapZones.h"
+#include "CTimerClients.h"
 
 ISDKHooks *sdkhooks = nullptr;
 
@@ -48,6 +49,7 @@ bool TimerExtension::SDK_OnLoad(char *error, size_t maxlength, bool late)
     }
 
     mapzones->ReconfigureHooks(); // call after parsing game config files
+    timerclients->ReconfigureHooks();
 
     return true;
 }
