@@ -15,6 +15,10 @@ public:
     ~CTimerClient();
 
 public:
+    int GetIndex();
+    IGamePlayer *GetGamePlayer();
+
+public:
     void PrintToChat(const char *format, int argc = 0, ...);
 
 public: // Timer stuff
@@ -27,6 +31,10 @@ public: // Timer stuff
     void CheckpointReached(int track, int index, float offset = 0.0f);
     void StopTimer(bool finish, int track, float offset = 0.0f);
 
+    bool IsRunning();
+    int GetCurrentTrack();
+    int GetCurrentCP();
+
 private:
     void ReachCheckpoint(float time);
     void Finish();
@@ -34,6 +42,7 @@ private:
 public: // Hooks
     void OnClientPutInServer();
     void PlayerRunCmd(CUserCmd *pCmd, IMoveHelper *movehelper);
+    void Jump();
 
     void GameFrame();
 

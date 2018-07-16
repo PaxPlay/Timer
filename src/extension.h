@@ -8,6 +8,8 @@
 
 #include "smsdk_ext.h"
 
+#include <engine/IEngineTrace.h>
+
 /* GameConfs */
 enum
 {
@@ -21,6 +23,10 @@ extern IGameConfig *gameconf[GAMECONF_TOTAL];
 /* Interfaces */
 extern IServerGameClients *gameclients;
 extern IServerGameEnts *gameents;
+extern IEngineTrace *enginetrace;
+extern ICvar *icvar;
+
+extern CGlobalVars *globals;
 
 extern IPhraseCollection *phrases;
 

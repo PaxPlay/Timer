@@ -24,6 +24,16 @@ CTimerClient::~CTimerClient()
     SH_REMOVE_MANUALHOOK_MEMFUNC(PlayerRunCmd, m_pEntity, this, &CTimerClient::PlayerRunCmd, false);
 }
 
+int CTimerClient::GetIndex()
+{
+    return m_iIndex;
+}
+
+IGamePlayer *CTimerClient::GetGamePlayer()
+{
+    return m_pGamePlayer;
+}
+
 void CTimerClient::PrintToChat(const char *format, int argc, ...)
 {
     va_list list;
@@ -77,6 +87,21 @@ void CTimerClient::StopTimer(bool finish, int track, float offset)
     }
 }
 
+bool CTimerClient::IsRunning()
+{
+    return m_bRunning;
+}
+
+int CTimerClient::GetCurrentTrack()
+{
+    return m_iTrack;
+}
+
+int CTimerClient::GetCurrentCP()
+{
+    return m_iCurrentCP;
+}
+
 void CTimerClient::ReachCheckpoint(float time)
 {
     smutils->LogMessage(myself, "%s reached checkpoint %d on track %d with %.3f.", m_pGamePlayer->GetName(), m_iCurrentCP, m_iTrack, time);
@@ -105,11 +130,15 @@ void CTimerClient::PlayerRunCmd(CUserCmd *pCmd, IMoveHelper *movehelper)
         pCmd->buttons &= ~IN_JUMP;
 }
 
+void CTimerClient::Jump()
+{
+    *util->EntPropSend<float>(m_pEntity, "m_flStamina") = 0.0f;
+}
+
 void CTimerClient::GameFrame()
 {
-    float frametime = g_SMAPI->GetCGlobals()->frametime;
     if (m_bRunning)
-        m_fTime += frametime;
+        m_fTime += globals->frametime;
 }
 
 bool CTimerClients::CreateClient(int index) {

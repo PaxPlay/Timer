@@ -1,15 +1,22 @@
 #include <ISDKHooks.h>
+#include <igameevents.h>
 
 #include "extension.h"
 #include "CHookManager.h"
 #include "CRootConsoleCmds.h"
 #include "CMapZones.h"
 #include "CTimerClients.h"
+#include "CGameEventManager.h"
 
 ISDKHooks *sdkhooks = nullptr;
 
 IServerGameClients *gameclients = nullptr;
 IServerGameEnts *gameents = nullptr;
+IEngineTrace *enginetrace = nullptr;
+IGameEventManager2 *gameevents = nullptr;
+ICvar *icvar = nullptr;
+
+CGlobalVars *globals = nullptr;
 
 IPhraseCollection *phrases = nullptr;
 IGameConfig *gameconf[GAMECONF_TOTAL];
@@ -47,6 +54,8 @@ bool TimerExtension::SDK_OnLoad(char *error, size_t maxlength, bool late)
         if (!gameconfs->LoadGameConfigFile(gameconffiles[i], &gameconf[i], error, maxlength))
             return false;
     }
+
+    gameevents->AddListener(eventmanager, "player_jump", true);
 
     mapzones->ReconfigureHooks(); // call after parsing game config files
     timerclients->ReconfigureHooks();
@@ -94,10 +103,15 @@ bool TimerExtension::QueryRunning(char *error, size_t maxlength)
 
 bool TimerExtension::SDK_OnMetamodLoad(ISmmAPI *ismm, char *error, size_t maxlen, bool late)
 {
-
     /* Get Interfaces */
     GET_V_IFACE_CURRENT(GetServerFactory, gameclients,  IServerGameClients, INTERFACEVERSION_SERVERGAMECLIENTS);
     GET_V_IFACE_CURRENT(GetServerFactory, gameents,  IServerGameEnts, INTERFACEVERSION_SERVERGAMEENTS);
+    GET_V_IFACE_ANY(GetEngineFactory, enginetrace, IEngineTrace, INTERFACEVERSION_ENGINETRACE_SERVER);
+    GET_V_IFACE_ANY(GetEngineFactory, gameevents, IGameEventManager2, INTERFACEVERSION_GAMEEVENTSMANAGER2);
+    GET_V_IFACE_ANY(GetEngineFactory, icvar, ICvar, CVAR_INTERFACE_VERSION);
+
+
+    globals = ismm->GetCGlobals();
 
     return true;
 }
