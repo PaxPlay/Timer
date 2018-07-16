@@ -17,6 +17,7 @@ sourceFiles = [
   'CMapZones.cpp',
   'CRootConsoleCmds.cpp',
   'CTimerClients.cpp',
+  'CGameEventManager.cpp',
 ]
 
 includeDirectorys = [
