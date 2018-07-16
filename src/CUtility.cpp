@@ -74,5 +74,18 @@ int CUtility::EntPropDataOffset(CBaseEntity *pEntity, const char *prop)
     return pDesc->fieldOffset[TD_OFFSET_NORMAL];
 }
 
+int CUtility::EntPropSendOffset(CBaseEntity *pEntity, const char *prop)
+{
+    if (!pEntity || !prop || !prop[0])
+        return 0;
+
+    const char* classname = gamehelpers->GetEntityClassname(pEntity);
+
+    if (!classname)
+        return 0;
+
+    return gamehelpers->GetSendPropOffset(gamehelpers->FindInSendTable(classname, prop));
+}
+
 static CUtility _util;
 CUtility *util = &_util;

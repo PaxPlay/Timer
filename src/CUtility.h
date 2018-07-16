@@ -64,8 +64,25 @@ public:
         return (T*)((uintptr_t)pEntity + offset);
     }
 
+    /**
+     * Receives a pointer to an entities prop send field.
+     * @tparam T            Field type. (this isn't checked)
+     * @param pEntity       Pointer to the entity.
+     * @param prop          Prop name.
+     * @return              Pointer to the send field.
+     */
+    template <typename T>
+    T *EntPropSend(CBaseEntity *pEntity, const char* prop) {
+        int offset = EntPropSendOffset(pEntity, prop);
+        if (!offset)
+            return nullptr;
+
+        return (T*)((uintptr_t)pEntity + offset);
+    }
+
 private:
     int EntPropDataOffset(CBaseEntity *pEntity, const char* prop);
+    int EntPropSendOffset(CBaseEntity *pEntity, const char* prop);
 };
 
 extern CUtility *util;
