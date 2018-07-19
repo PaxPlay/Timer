@@ -3,6 +3,10 @@
 #include "CMapZones.h"
 #include "CTimerClients.h"
 #include "CUtility.h"
+#include "CVFuncs.h"
+
+#include <iplayerinfo.h>
+//#include <itempents.h>
 
 static int _stoi(const char *str, int *res) // returns the number of consumed characters
 {
@@ -52,17 +56,31 @@ CStartZone::CStartZone(CBaseEntity *pEntity, int track) : CBaseZone(pEntity, tra
 {
 }
 
+void CStartZone::StartTouch(CBaseEntity *pOther)
+{
+    CTimerClient *client = timerclients->GetClient(pOther);
+    if (!client)
+        return;
+
+    client->BlockBhop(true);
+}
+
 void CStartZone::Touch(CBaseEntity *pOther)
 {
     CTimerClient *client = timerclients->GetClient(pOther);
     if (!client)
         return;
-    
+
     int flags = *util->EntPropData<int>(pOther, "m_fFlags");
+
     if (!(flags & FL_ONGROUND))
+    {
         client->StartTimer(m_iTrack);
+    }
     else
+    {
         client->StopTimer(false, m_iTrack);
+    }
 }
 
 void CStartZone::EndTouch(CBaseEntity *pOther)
@@ -71,6 +89,7 @@ void CStartZone::EndTouch(CBaseEntity *pOther)
     if (!client)
         return;
 
+    client->BlockBhop(false);
     client->StartTimer(m_iTrack);
 }
 
@@ -83,6 +102,33 @@ void CEndZone::StartTouch(CBaseEntity *pOther)
     CTimerClient *client = timerclients->GetClient(pOther);
     if (!client)
         return;
+
+    if (!client->IsRunning() || client->GetCurrentTrack() != m_iTrack)
+        return;
+
+    /*
+    IPlayerInfo *playerinfo = client->GetGamePlayer()->GetPlayerInfo();
+    Vector origin = playerinfo->GetAbsOrigin();
+    Vector velocity = *util->EntPropData<Vector>(pOther, "m_vecVelocity");
+    Vector previousOrigin = origin - velocity.Length() * globals->interval_per_tick;
+    */
+
+    /* Get the exact time the player enters the zone. */
+    /* TODO: Precise timing
+    Ray_t ray;
+    ray.Init(origin, previousOrigin, playerinfo->GetPlayerMins(), playerinfo->GetPlayerMaxs());
+
+    auto *pHandleEntity = reinterpret_cast<IHandleEntity *>(pOther);
+    trace_t trace;
+
+    enginetrace->ClipRayToEntity(ray, MASK_ALL, pHandleEntity, &trace);
+
+    Vector endpos = trace.endpos;
+    smutils->LogMessage(myself, "Hit: %d", trace.DidHit());
+    smutils->LogMessage(myself, "Previous x: %f, y: %f, z: %f", previousOrigin.x, previousOrigin.y, previousOrigin.z);
+    smutils->LogMessage(myself, "Endpos x: %f, y: %f, z: %f", endpos.x, endpos.y, endpos.z);
+    smutils->LogMessage(myself, "Origin x: %f, y: %f, z: %f", origin.x, origin.y, origin.z);
+    */
 
     client->StopTimer(true, m_iTrack);
 }

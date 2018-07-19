@@ -35,6 +35,7 @@ public: // Timer stuff
     int GetCurrentTrack();
     int GetCurrentCP();
 
+    void BlockBhop(bool block);
 private:
     void ReachCheckpoint(float time);
     void Finish();
@@ -56,6 +57,10 @@ private:
     int m_iTrack;
     int m_iCurrentCP;
     float m_fTime;
+
+    unsigned int m_iTicksOnGround;
+
+    bool m_bBhopBlocked;
 };
 
 class CTimerClients

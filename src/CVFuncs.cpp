@@ -3,8 +3,17 @@
 
 class VFuncClass {};
 
+void CVFuncs::TeleportEntity(CBaseEntity *pEntity, const Vector *pos, const Vector *ang, const Vector *vel)
+{
+    int offset;
+    if (!gameconf[GAMECONF_SDKTOOLS]->GetOffset("Teleport", &offset))
+        smutils->LogError(myself, "Couldn't get Teleport offset.");
+
+    CallVFunc<void, const Vector *, const Vector *, const Vector *>(pEntity, offset, pos, ang, vel);
+}
+
 template < typename T1, typename ... T2>
-T1 CallVFunc(void *pObj, int vTableOffset, T2 ... args)
+T1 CVFuncs::CallVFunc(void *pObj, int vTableOffset, T2 ... args)
 {
     auto vptr = reinterpret_cast<void***>(pObj);
 
@@ -28,3 +37,6 @@ T1 CallVFunc(void *pObj, int vTableOffset, T2 ... args)
     return func(args ...);
 #endif
 }
+
+static CVFuncs _vfuncs;
+CVFuncs *vfuncs = &_vfuncs;

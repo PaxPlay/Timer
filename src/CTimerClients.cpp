@@ -1,6 +1,7 @@
 #include "extension.h"
 #include "CTimerClients.h"
 #include "CUtility.h"
+#include "CVFuncs.h"
 
 #include <cstdarg>
 #include <shareddefs.h>
@@ -102,6 +103,11 @@ int CTimerClient::GetCurrentCP()
     return m_iCurrentCP;
 }
 
+void CTimerClient::BlockBhop(bool block)
+{
+    m_bBhopBlocked = block;
+}
+
 void CTimerClient::ReachCheckpoint(float time)
 {
     smutils->LogMessage(myself, "%s reached checkpoint %d on track %d with %.3f.", m_pGamePlayer->GetName(), m_iCurrentCP, m_iTrack, time);
@@ -128,10 +134,31 @@ void CTimerClient::PlayerRunCmd(CUserCmd *pCmd, IMoveHelper *movehelper)
     int flags = *util->EntPropData<int>(m_pEntity, "m_fFlags");
     if (pCmd->buttons & IN_JUMP && !(flags & FL_ONGROUND))
         pCmd->buttons &= ~IN_JUMP;
+
+
+    if (flags & FL_ONGROUND)
+        m_iTicksOnGround++;
+    else
+        m_iTicksOnGround = 0;
+
+    if (m_bBhopBlocked && m_iTicksOnGround < 10)
+    {
+        pCmd->buttons &= ~IN_JUMP;
+    }
 }
 
 void CTimerClient::Jump()
 {
+    if (m_bBhopBlocked)
+    {
+        if (util->EntPropData<Vector>(m_pEntity, "m_vecVelocity")->Length2DSqr() > 290 * 290)
+        {
+            Vector vel(0.0f, 0.0f, 0.0f);
+            vfuncs->TeleportEntity(m_pEntity, nullptr, nullptr, &vel);
+            return;
+        }
+    }
+
     *util->EntPropSend<float>(m_pEntity, "m_flStamina") = 0.0f;
 }
 
