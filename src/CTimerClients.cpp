@@ -13,6 +13,7 @@ SH_DECL_MANUALHOOK2_void(PlayerRunCmd, 0, 0, 0, CUserCmd *, IMoveHelper *);
 
 CTimerClient::CTimerClient(int index) :
         m_iIndex(index),
+        m_pGamePlayer(nullptr),
         m_bRunning(false),
         m_iTrack(0),
         m_iCurrentCP(0),
@@ -33,6 +34,19 @@ int CTimerClient::GetIndex()
 IGamePlayer *CTimerClient::GetGamePlayer()
 {
     return m_pGamePlayer;
+}
+
+CBaseEntity *CTimerClient::GetBaseEntity()
+{
+    return m_pEntity;
+}
+
+bool CTimerClient::IsInGame()
+{
+    if (!m_pGamePlayer)
+        return false;
+
+    return m_pGamePlayer->IsInGame();
 }
 
 void CTimerClient::PrintToChat(const char *format, int argc, ...)
@@ -103,6 +117,11 @@ int CTimerClient::GetCurrentCP()
     return m_iCurrentCP;
 }
 
+float CTimerClient::GetCurrentTime()
+{
+    return m_fTime;
+}
+
 void CTimerClient::BlockBhop(bool block)
 {
     m_bBhopBlocked = block;
@@ -110,7 +129,6 @@ void CTimerClient::BlockBhop(bool block)
 
 void CTimerClient::ReachCheckpoint(float time)
 {
-    smutils->LogMessage(myself, "%s reached checkpoint %d on track %d with %.3f.", m_pGamePlayer->GetName(), m_iCurrentCP, m_iTrack, time);
     PrintToChat("You reached checkpoint %d on track %d with a time of %.3f", 3, &m_iCurrentCP, &m_iTrack, &time);
 }
 
@@ -214,6 +232,9 @@ void CTimerClients::ReconfigureHooks()
         smutils->LogError(myself, "Couldn't find the PlayerRunCmd offset.");
 
     smutils->AddGameFrameHook(GameFrame);
+
+    m_Hud = new CBasicHud;
+    timersys->CreateTimer(this, 0.1, nullptr, TIMER_FLAG_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 }
 
 CTimerClient *CTimerClients::GetClient(CBaseEntity *pEntity)
@@ -227,6 +248,23 @@ CTimerClient *CTimerClients::GetClient(CBaseEntity *pEntity)
 CTimerClients::~CTimerClients()
 {
     smutils->RemoveGameFrameHook(GameFrame);
+    delete m_Hud;
+}
+
+ResultType CTimerClients::OnTimer(ITimer *pTimer, void *pData)
+{
+    for (auto &d : m_Clients)
+    {
+        if (d && d->IsInGame())
+            m_Hud->DrawTimerInformation(d);
+    }
+
+    return Pl_Continue;
+}
+
+void CTimerClients::OnTimerEnd(ITimer *pTimer, void *pData)
+{
+
 }
 
 static CTimerClients _timerclients;

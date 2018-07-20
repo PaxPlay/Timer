@@ -18,6 +18,7 @@ sourceFiles = [
   'CRootConsoleCmds.cpp',
   'CTimerClients.cpp',
   'CGameEventManager.cpp',
+  'CBaseHud.cpp',
 ]
 
 includeDirectorys = [

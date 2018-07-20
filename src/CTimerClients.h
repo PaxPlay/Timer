@@ -2,6 +2,7 @@
 #define TIMER_CTIMERCLIENTS_H
 
 #include "extension.h"
+#include "CBaseHud.h"
 
 #include <shareddefs.h>
 
@@ -17,6 +18,10 @@ public:
 public:
     int GetIndex();
     IGamePlayer *GetGamePlayer();
+    CBaseEntity *GetBaseEntity();
+
+public:
+    bool IsInGame();
 
 public:
     void PrintToChat(const char *format, int argc = 0, ...);
@@ -34,6 +39,7 @@ public: // Timer stuff
     bool IsRunning();
     int GetCurrentTrack();
     int GetCurrentCP();
+    float GetCurrentTime();
 
     void BlockBhop(bool block);
 private:
@@ -63,7 +69,7 @@ private:
     bool m_bBhopBlocked;
 };
 
-class CTimerClients
+class CTimerClients : public ITimedEvent
 {
 public:
     ~CTimerClients();
@@ -97,7 +103,12 @@ public:
     CTimerClient *GetClient(CBaseEntity *pEntity);
 
     void ReconfigureHooks();
+
+public:
+    ResultType OnTimer(ITimer *pTimer, void *pData) override;
+    void OnTimerEnd(ITimer *pTimer, void *pData) override;
 private:
+    CBaseHud *m_Hud;
     CTimerClient *m_Clients[MAX_PLAYERS - 1];
 };
 
