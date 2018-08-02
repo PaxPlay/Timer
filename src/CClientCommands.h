@@ -30,12 +30,6 @@ public:
 
     void RegisterCommand(const char *cmd, CClientCommand callback);
 
-    /**
-     *
-     * @param client
-     * @param args
-     * @return
-     */
     bool ProcessCommand(CTimerClient *client, const CCommand &args);
 
     void ListCommands(CTimerClient *client = nullptr);

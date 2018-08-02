@@ -48,11 +48,12 @@ class TrackMenuHandler : public IMenuHandler
 
     void OnMenuEnd(IBaseMenu *menu, MenuEndReason reason) override
     {
-        smutils->AddFrameAction([](void *userp)
-                                {
-                                    ((IBaseMenu*)userp)->Destroy();
-                                },
-                                menu);
+        // probably not the best solution, but just calling menu->Destroy crashed my server...
+
+        auto frameaction = [](void *userp) -> void {
+            reinterpret_cast<IBaseMenu *>(userp)->Destroy();
+        };
+        smutils->AddFrameAction(frameaction, menu);
     }
 };
 
