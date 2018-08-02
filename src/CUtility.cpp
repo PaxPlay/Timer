@@ -2,6 +2,8 @@
 
 #include "CUtility.h"
 
+#include <amtl/am-string.h>
+
 int CUtility::Format(char *buffer, const size_t maxlength, const char *format, const int argc, ...)
 {
     va_list list;
@@ -108,6 +110,25 @@ int CUtility::EntPropSendOffset(CBaseEntity *pEntity, const char *prop)
         return 0;
 
     return gamehelpers->GetSendPropOffset(gamehelpers->FindInSendTable(classname, prop));
+}
+
+void CUtility::PrintGenericOptionToConsole(int client, const char *cmd, const char *text)
+{
+    // shamelessly copied from rootconsolemenu
+    char buffer[255];
+    size_t len, cmdlen = strlen(cmd);
+
+    len = ke::SafeSprintf(buffer, sizeof(buffer), "    %s", cmd);
+    if (cmdlen < 16)
+    {
+        size_t num = 16 - cmdlen;
+        for (size_t i = 0; i < num; i++)
+        {
+            buffer[len++] = ' ';
+        }
+        len += ke::SafeSprintf(&buffer[len], sizeof(buffer) - len, " - %s", text);
+        PrintToConsole(client, "%s", 1, buffer);
+    }
 }
 
 static CUtility _util;

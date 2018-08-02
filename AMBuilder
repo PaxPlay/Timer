@@ -20,6 +20,7 @@ sourceFiles = [
   'CGameEventManager.cpp',
   'CBaseHud.cpp',
   'CClientCommands.cpp',
+  'Commands.cpp',
 ]
 
 includeDirectorys = [

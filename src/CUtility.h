@@ -66,6 +66,8 @@ public:
      */
     void PrintToConsoleVA(int client, const char *format, const int argc = 0, va_list va_args = va_list());
 
+    void PrintGenericOptionToConsole(int client, const char *cmd, const char *text);
+
     /**
      * Receives a pointer to an entities prop data field.
      * @tparam T            Field type. (this isn't checked)
@@ -74,7 +76,8 @@ public:
      * @return              Pointer to the data field.
      */
     template <typename T>
-    T *EntPropData(CBaseEntity *pEntity, const char* prop) {
+    T *EntPropData(CBaseEntity *pEntity, const char* prop)
+    {
         int offset = EntPropDataOffset(pEntity, prop);
         if (!offset)
             return nullptr;

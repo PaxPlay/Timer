@@ -1,9 +1,18 @@
 #include "CClientCommands.h"
+#include "CUtility.h"
+#include "CTimerClients.h"
 #include "extension.h"
 
-CClientCommand::CClientCommand(const char *cmd, CClientCommand::COMMAND_CALLBACK callback) : m_Callback(callback)
+CClientCommand::CClientCommand(const char *cmd, const char *description, COMMAND_CALLBACK callback)
+        : m_sDescription(description),
+          m_Callback(callback)
 {
     clientcommands->RegisterCommand(cmd, *this);
+}
+
+const char *CClientCommand::GetDescription() const
+{
+    return m_sDescription;
 }
 
 void CClientCommand::operator()(CTimerClient *client, const CCommand &args)
@@ -58,12 +67,31 @@ bool CClientCommands::ProcessCommand(CTimerClient *client, const CCommand &args)
     return false;
 }
 
-void CClientCommands::ListCommands()
+void CClientCommands::ListCommands(CTimerClient *client)
 {
-    rootconsole->ConsolePrint("Displaying client commands:");
+    auto PrintOption = [&](const char *cmd, const char *text)
+    {
+        if (client)
+            util->PrintGenericOptionToConsole(client->GetIndex(), cmd, text);
+        else
+            rootconsole->DrawGenericOption(cmd, text);
+    };
+
+
+    if (client)
+        client->PrintToConsole("Displaying available commands:");
+    else
+        rootconsole->ConsolePrint("Displaying client commands:");
+
     for (auto iterator = m_Commands->iter(); !iterator.empty(); iterator.next())
     {
-        rootconsole->DrawGenericOption(iterator->key.chars(), "No description provided.");
+        PrintOption(iterator->key.chars(), iterator->value->at(0).GetDescription());
+
+        // If there's more than one handler listening to the same command, print all of them.
+        for (size_t i = 1; i < iterator->value->length(); i++)
+        {
+            PrintOption(iterator->key.chars(), iterator->value->at(i).GetDescription());
+        }
     }
 }
 
