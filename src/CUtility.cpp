@@ -56,6 +56,29 @@ void CUtility::PrintToChatVA(int client, const char *format, const int argc, va_
     }
 }
 
+void CUtility::PrintToConsole(int client, const char *format, const int argc, ...)
+{
+    va_list list;
+    va_start(list, argc);
+
+    PrintToConsoleVA(client, format, argc, list);
+}
+
+void CUtility::PrintToConsoleVA(int client, const char *format, const int argc, va_list va_args)
+{
+    char buffer[253];
+
+    if (FormatVA(buffer, 253, format, argc, va_args))
+    {
+        if (!gamehelpers->TextMsg(client, TEXTMSG_DEST_CONSOLE, buffer))
+            smutils->LogError(myself, "Couldn't print to console.");
+    }
+    else
+    {
+        smutils->LogError(myself, "PrintToConsole failed: couldn't format args.");
+    }
+}
+
 int CUtility::EntPropDataOffset(CBaseEntity *pEntity, const char *prop)
 {
     if (!pEntity || !prop || !prop[0])

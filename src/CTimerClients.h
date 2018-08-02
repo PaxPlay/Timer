@@ -27,6 +27,7 @@ public:
 
 public:
     void PrintToChat(const char *format, int argc = 0, ...);
+    void PrintToConsole(const char *format, int argc = 0, ...);
 
 public: // Timer stuff
     /**

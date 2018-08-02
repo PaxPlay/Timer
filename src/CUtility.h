@@ -49,6 +49,24 @@ public:
     void PrintToChatVA(int client, const char *format, const int argc = 0, va_list va_args = va_list());
 
     /**
+     * Prints to the chat. Wraps FormatVA and thus IPhraseCollection::FormatString.
+     * @param client        Client index.
+     * @param argc          Number of formatting arguments specified.
+     * @param format        Format specifier string.
+     * @param ...           Format arguments. For non string types pass a pointer to the object.
+     */
+    void PrintToConsole(int client, const char *format, const int argc = 0, ...);
+
+    /**
+     * Prints to the console. Wraps FormatVA and thus IPhraseCollection::FormatString.
+     * @param client        Client index.
+     * @param argc          Number of formatting arguments specified.
+     * @param format        Format specifier string.
+     * @param va_args       Format argument list. For non string types pass a pointer to the object.
+     */
+    void PrintToConsoleVA(int client, const char *format, const int argc = 0, va_list va_args = va_list());
+
+    /**
      * Receives a pointer to an entities prop data field.
      * @tparam T            Field type. (this isn't checked)
      * @param pEntity       Pointer to the entity.

@@ -59,6 +59,14 @@ void CTimerClient::PrintToChat(const char *format, int argc, ...)
     util->PrintToChatVA(m_iIndex, format, argc, list);
 }
 
+void CTimerClient::PrintToConsole(const char *format, int argc, ...)
+{
+    va_list list;
+    va_start(list, argc);
+
+    util->PrintToConsoleVA(m_iIndex, format, argc, list);
+}
+
 void CTimerClient::StartTimer(int track)
 {
     if (m_bRunning)
