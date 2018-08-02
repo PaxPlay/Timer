@@ -6,6 +6,8 @@
 
 #include <shareddefs.h>
 
+#include <amtl/am-vector.h>
+
 class CUserCmd;
 class IMoveHelper;
 
@@ -41,6 +43,8 @@ public: // Timer stuff
     int GetCurrentCP();
     float GetCurrentTime();
 
+    int GetSelectedHud();
+
     void BlockBhop(bool block);
 private:
     void ReachCheckpoint(float time);
@@ -59,14 +63,18 @@ private:
     edict_t *m_pEdict;
     CBaseEntity *m_pEntity;
 
+    // timer
     bool m_bRunning;
     int m_iTrack;
     int m_iCurrentCP;
     float m_fTime;
 
-    unsigned int m_iTicksOnGround;
+    // settings
+    int m_iHudIndex;
 
     bool m_bBhopBlocked;
+
+    unsigned int m_iTicksOnGround;
 };
 
 class CTimerClients : public ITimedEvent
@@ -102,13 +110,17 @@ public:
      */
     CTimerClient *GetClient(CBaseEntity *pEntity);
 
+    bool RegisterHud(CBaseHud *hud);
+
+    bool RemoveHud(const char *name);
+
     void ReconfigureHooks();
 
 public:
     ResultType OnTimer(ITimer *pTimer, void *pData) override;
     void OnTimerEnd(ITimer *pTimer, void *pData) override;
 private:
-    CBaseHud *m_Hud;
+    ke::Vector<CBaseHud *> m_vHuds;
     CTimerClient *m_Clients[MAX_PLAYERS - 1];
 };
 

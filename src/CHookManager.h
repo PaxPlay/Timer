@@ -30,7 +30,7 @@ public:
     //void OnClientSettingsChanged(int client) override;
 
     /* Custom Hooks */
-
+    void Hook_ClientCommand(edict_t *pEntity, const CCommand &args);
 };
 
 extern CHookManager *hooks;

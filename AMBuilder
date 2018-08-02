@@ -19,6 +19,7 @@ sourceFiles = [
   'CTimerClients.cpp',
   'CGameEventManager.cpp',
   'CBaseHud.cpp',
+  'CClientCommands.cpp',
 ]
 
 includeDirectorys = [

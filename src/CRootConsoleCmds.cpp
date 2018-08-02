@@ -1,5 +1,6 @@
 #include "CRootConsoleCmds.h"
 #include "CMapZones.h"
+#include "CClientCommands.h"
 
 void CRootConsoleCmds::OnRootConsoleCommand(const char *cmdname, const ICommandArgs *args)
 {
@@ -29,13 +30,16 @@ void CRootConsoleCmds::OnRootConsoleCommand(const char *cmdname, const ICommandA
                     rootconsole->DrawGenericOption("zones", "Print hooked mapzones");
                 }
             }
-
-
+            else if (strcmp(args->Arg(2), "cmds") == 0)
+            {
+                clientcommands->ListCommands();
+            }
         }
         else
         {
             rootconsole->ConsolePrint("Usage: sm timer <command>.");
             rootconsole->DrawGenericOption("debug", "Print debug information");
+            rootconsole->DrawGenericOption("cmds", "Prints available commands");
         }
 
     }

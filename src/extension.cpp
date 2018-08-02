@@ -57,8 +57,16 @@ bool TimerExtension::SDK_OnLoad(char *error, size_t maxlength, bool late)
 
     gameevents->AddListener(eventmanager, "player_jump", true);
 
+    hooks->InitHooks();
+
     mapzones->ReconfigureHooks(); // call after parsing game config files
     timerclients->ReconfigureHooks();
+
+    if (!timerclients->RegisterHud(new CBasicHud))
+    {
+        smutils->Format(error, maxlength, "Cannot register the basic hud.");
+        return false;
+    }
 
     return true;
 }
@@ -69,11 +77,14 @@ void TimerExtension::SDK_OnUnload()
         gameconfs->CloseGameConfigFile(d);
 
     phrases->Destroy();
+    hooks->RemoveHooks();
 
     if (QueryRunning(nullptr, 0))
     {
         sdkhooks->RemoveEntityListener(hooks);
     }
+
+    timerclients->RemoveHud("Basic Hud");
 }
 
 void TimerExtension::SDK_OnAllLoaded()

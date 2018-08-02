@@ -2,6 +2,7 @@
 #include "CTimerClients.h"
 #include "CUtility.h"
 #include "CVFuncs.h"
+#include "CClientCommands.h"
 
 #include <cstdarg>
 #include <shareddefs.h>
@@ -17,7 +18,8 @@ CTimerClient::CTimerClient(int index) :
         m_bRunning(false),
         m_iTrack(0),
         m_iCurrentCP(0),
-        m_fTime(0.0f)
+        m_fTime(0.0f),
+        m_iHudIndex(0)
 {
 }
 
@@ -120,6 +122,11 @@ int CTimerClient::GetCurrentCP()
 float CTimerClient::GetCurrentTime()
 {
     return m_fTime;
+}
+
+int CTimerClient::GetSelectedHud()
+{
+    return m_iHudIndex;
 }
 
 void CTimerClient::BlockBhop(bool block)
@@ -233,8 +240,7 @@ void CTimerClients::ReconfigureHooks()
 
     smutils->AddGameFrameHook(GameFrame);
 
-    m_Hud = new CBasicHud;
-    timersys->CreateTimer(this, 0.1, nullptr, TIMER_FLAG_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+    timersys->CreateTimer(this, 1.0, nullptr, TIMER_FLAG_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 }
 
 CTimerClient *CTimerClients::GetClient(CBaseEntity *pEntity)
@@ -245,10 +251,35 @@ CTimerClient *CTimerClients::GetClient(CBaseEntity *pEntity)
     return nullptr;
 }
 
+bool CTimerClients::RegisterHud(CBaseHud *hud)
+{
+    for (size_t i = 0; i < m_vHuds.length(); i++)
+    {
+        if (strcmp(hud->GetName(), m_vHuds[i]->GetName()) == 0)
+            return false;
+    }
+
+    m_vHuds.append(hud);
+    return true;
+}
+
+bool CTimerClients::RemoveHud(const char *name)
+{
+    for (size_t i = 0; i < m_vHuds.length(); i++)
+    {
+        if (strcmp(name, m_vHuds[i]->GetName()) == 0)
+        {
+            delete m_vHuds[i];
+            m_vHuds.remove(i);
+            return true;
+        }
+    }
+    return false;
+}
+
 CTimerClients::~CTimerClients()
 {
     smutils->RemoveGameFrameHook(GameFrame);
-    delete m_Hud;
 }
 
 ResultType CTimerClients::OnTimer(ITimer *pTimer, void *pData)
@@ -256,7 +287,7 @@ ResultType CTimerClients::OnTimer(ITimer *pTimer, void *pData)
     for (auto &d : m_Clients)
     {
         if (d && d->IsInGame())
-            m_Hud->DrawTimerInformation(d);
+            m_vHuds[d->GetSelectedHud()]->DrawTimerInformation(d);
     }
 
     return Pl_Continue;
