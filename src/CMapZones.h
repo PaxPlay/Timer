@@ -84,8 +84,13 @@ public:
      * @return              True on succes.
      */
     bool RegisterZone(CBaseEntity *pEntity, const char* classname);
+
+    void TeleportEntityToZone(CBaseEntity *pEntity, ZoneType type, int track, int cpnum = 0);
+
+    unsigned int GetTrackCount();
 private:
     bool RegisterZone(CBaseEntity *pEntity, const char* identifier, int track);
+    CBaseZone *GetZone(ZoneType type, int track, int cpnum = 0);
 
 private:
     ke::Vector<CStartZone *> m_vStartZones;

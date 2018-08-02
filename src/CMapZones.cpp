@@ -230,27 +230,28 @@ bool CMapZones::RegisterZone(CBaseEntity *pEntity, const char *identifier, int t
 
 void CMapZones::PrintZones()
 {
-    smutils->LogMessage(myself, "----------------");
-    smutils->LogMessage(myself, "Listing mapzones");
-    smutils->LogMessage(myself, "----------------");
 
-    smutils->LogMessage(myself, "Start Zones:");
+    rootconsole->ConsolePrint("----------------");
+    rootconsole->ConsolePrint("Listing mapzones");
+    rootconsole->ConsolePrint("----------------");
+
+    rootconsole->ConsolePrint("Start Zones:");
     for (size_t i = 0; i < m_vStartZones.length(); i++)
     {
-        smutils->LogMessage(myself, "%d:%p", i, m_vStartZones[i]->GetBaseEntity());
+        rootconsole->ConsolePrint("%d:%p", i, m_vStartZones[i]->GetBaseEntity());
     }
 
-    smutils->LogMessage(myself, "End Zones:");
+    rootconsole->ConsolePrint("End Zones:");
     for (size_t i = 0; i < m_vEndZones.length(); i++)
     {
-        smutils->LogMessage(myself, "%d:%p", i, m_vEndZones[i]->GetBaseEntity());
+        rootconsole->ConsolePrint("%d:%p", i, m_vEndZones[i]->GetBaseEntity());
     }
 
-    smutils->LogMessage(myself, "Checkpoint Zones:");
+    rootconsole->ConsolePrint("Checkpoint Zones:");
     for (size_t i = 0; i < m_vCheckpointZones.length(); i++)
     {
         for (size_t j = 0; j < m_vCheckpointZones[i].length(); j++)
-        smutils->LogMessage(myself, "%d:%d:%p", i, j, m_vCheckpointZones[i][j]->GetBaseEntity());
+            rootconsole->ConsolePrint("%d:%d:%p", i, j, m_vCheckpointZones[i][j]->GetBaseEntity());
     }
 }
 
@@ -270,6 +271,47 @@ void CMapZones::ReconfigureHooks()
     RECONFIGURE(StartTouch);
     RECONFIGURE(Touch);
     RECONFIGURE(EndTouch);
+}
+
+void CMapZones::TeleportEntityToZone(CBaseEntity *pEntity, ZoneType type, int track, int cpnum)
+{
+    CBaseZone *pZone = GetZone(type, track, cpnum);
+    CBaseEntity *pZoneEntity = pZone->GetBaseEntity();
+
+    // TODO: this might teleport people into the ground
+    Vector origin = *util->EntPropData<Vector>(pZoneEntity, "m_vecOrigin");
+    vfuncs->TeleportEntity(pEntity, &origin, nullptr, nullptr);
+}
+
+CBaseZone *CMapZones::GetZone(ZoneType type, int track, int cpnum)
+{
+    switch (type)
+    {
+        case ZoneType::START:
+            if ((int) m_vStartZones.length() <= track)
+                return nullptr;
+
+            return m_vStartZones[track];
+        case ZoneType::END:
+            if ((int) m_vEndZones.length() <= track)
+                return nullptr;
+
+            return m_vEndZones[track];
+        case ZoneType::CHECKPOINT:
+            if ((int) m_vCheckpointZones.length() <= track)
+                return nullptr;
+
+            if ((int) m_vCheckpointZones[track].length() < cpnum)
+                return nullptr;
+
+            return m_vCheckpointZones[track][cpnum - 1];
+    }
+    return nullptr;
+}
+
+unsigned int CMapZones::GetTrackCount()
+{
+    return m_vStartZones.length();
 }
 
 static CMapZones _mapzones;
