@@ -1,8 +1,35 @@
 "Phrases"
 {
-    "Test translation"
+    "Main"
     {
-        "#format"       "{1:s}"
-        "en"            "Test translation, have a string: {1}"
+        "en"            "Main"
+    }
+    
+    "Bonus"
+    {
+        "#format"       "{1:d}"
+        "en"            "Bonus {1}"
+    }
+
+    "Timer Checkpoint Reached"
+    {
+        "#format"       "{1:s},{2:d},{3:s}"
+        "en"            "[{1}] You reached checkpoint {2} with a time of {3}."
+    }
+
+    "Timer Finished"
+    {
+        "#format"       "{1:s},{2:s}"
+        "en"            "[{1}] You finished with a time of {2}."
+    }
+
+    "Timer Stopped Noclip"
+    {
+        "en"            "Your timer was stopped for using noclip."
+    }
+
+    "Menu Track Title"
+    {
+        "en"            "Select a track."
     }
 }

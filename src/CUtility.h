@@ -101,6 +101,10 @@ public:
         return (T*)((uintptr_t)pEntity + offset);
     }
 
+    void GetTrackName(char *buffer, int maxlen, int track);
+
+    void FormatTime(char *buffer, int maxlen, float time, int precision = 3);
+
 private:
     int EntPropDataOffset(CBaseEntity *pEntity, const char* prop);
     int EntPropSendOffset(CBaseEntity *pEntity, const char* prop);

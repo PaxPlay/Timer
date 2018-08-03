@@ -78,7 +78,8 @@ bool CTimerClient::ToggleNoclip()
 {
     if (m_bRunning)
     {
-        PrintToChat("Your timer was stopped for using noclip.");
+        smutils->SetGlobalTarget(m_iIndex);
+        PrintToChat("%t", 1, "Timer Stopped Noclip");
         StopTimer(false, m_iTrack);
     }
 
@@ -178,13 +179,30 @@ void CTimerClient::BlockBhop(bool block)
 
 void CTimerClient::ReachCheckpoint(float time)
 {
-    PrintToChat("You reached checkpoint %d on track %d with a time of %.3f", 3, &m_iCurrentCP, &m_iTrack, &time);
+    smutils->SetGlobalTarget(m_iIndex);
+
+    char sTrack[16];
+    util->GetTrackName(sTrack, 16, m_iTrack);
+
+    char sTime[32];
+    util->FormatTime(sTime, 32, m_flTime, 0);
+
+    PrintToChat("%t", 4, "Timer Checkpoint Reached", sTrack, &m_iCurrentCP, sTime);
 }
 
 void CTimerClient::Finish()
 {
     smutils->LogMessage(myself, "%s finished with %.3f seconds on track %d.", m_pGamePlayer->GetName(), m_flTime, m_iTrack);
-    PrintToChat("You finished with a time of %.3f seconds on track %d.", 2, &m_flTime, &m_iTrack);
+
+    smutils->SetGlobalTarget(m_iIndex);
+
+    char sTrack[16];
+    util->GetTrackName(sTrack, 16, m_iTrack);
+
+    char sTime[32];
+    util->FormatTime(sTime, 32, m_flTime, 0);
+
+    PrintToChat("%t", 3, "Timer Finished", sTrack, sTime);
 }
 
 void CTimerClient::OnClientPutInServer()

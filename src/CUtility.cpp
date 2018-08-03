@@ -81,6 +81,61 @@ void CUtility::PrintToConsoleVA(int client, const char *format, const int argc, 
     }
 }
 
+void CUtility::PrintGenericOptionToConsole(int client, const char *cmd, const char *text)
+{
+    // shamelessly copied from rootconsolemenu
+    char buffer[255];
+    size_t len, cmdlen = strlen(cmd);
+
+    len = ke::SafeSprintf(buffer, sizeof(buffer), "    %s", cmd);
+    if (cmdlen < 16)
+    {
+        size_t num = 16 - cmdlen;
+        for (size_t i = 0; i < num; i++)
+        {
+            buffer[len++] = ' ';
+        }
+        len += ke::SafeSprintf(&buffer[len], sizeof(buffer) - len, " - %s", text);
+        PrintToConsole(client, "%s", 1, buffer);
+    }
+}
+
+void CUtility::GetTrackName(char *buffer, int maxlen, int track)
+{
+    if (track == 0)
+        util->Format(buffer, maxlen, "%t", 1, "Main");
+    else
+        util->Format(buffer, maxlen, "%t", 2, "Bonus", &track);
+}
+
+void CUtility::FormatTime(char *buffer, int maxlen, float time, int precision)
+{
+    if (time > 3600.0f)
+    {
+        int hours = (int)(time / 3600.0f);
+        smutils->Format(buffer, maxlen, "%d:", hours);
+
+        time -= hours * 3600.0f;
+    }
+
+    if (time > 60.0f || buffer[0])
+    {
+        int minutes = (int)(time / 60.0f);
+        smutils->Format(buffer, maxlen, "%s%2d:", buffer, minutes);
+
+        time -= minutes * 60.0f;
+    }
+
+    char fmt[] = "%s%.xf";
+
+    if (precision > 0 && precision < 10)
+        fmt[4] = '0' + precision;
+    else
+        fmt[4] = '3';
+
+    smutils->Format(buffer, maxlen, fmt, buffer, time);
+}
+
 int CUtility::EntPropDataOffset(CBaseEntity *pEntity, const char *prop)
 {
     if (!pEntity || !prop || !prop[0])
@@ -110,25 +165,6 @@ int CUtility::EntPropSendOffset(CBaseEntity *pEntity, const char *prop)
         return 0;
 
     return gamehelpers->GetSendPropOffset(gamehelpers->FindInSendTable(classname, prop));
-}
-
-void CUtility::PrintGenericOptionToConsole(int client, const char *cmd, const char *text)
-{
-    // shamelessly copied from rootconsolemenu
-    char buffer[255];
-    size_t len, cmdlen = strlen(cmd);
-
-    len = ke::SafeSprintf(buffer, sizeof(buffer), "    %s", cmd);
-    if (cmdlen < 16)
-    {
-        size_t num = 16 - cmdlen;
-        for (size_t i = 0; i < num; i++)
-        {
-            buffer[len++] = ' ';
-        }
-        len += ke::SafeSprintf(&buffer[len], sizeof(buffer) - len, " - %s", text);
-        PrintToConsole(client, "%s", 1, buffer);
-    }
 }
 
 static CUtility _util;

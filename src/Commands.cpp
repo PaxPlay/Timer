@@ -63,7 +63,12 @@ static TrackMenuHandler s_TrackMenuHandler;
 CLIENT_COMMAND(track, "Opens the track selection menu")
 {
     IBaseMenu *menu = menus->GetDefaultStyle()->CreateMenu(&s_TrackMenuHandler);
-    menu->SetDefaultTitle("Select a track");
+
+    smutils->SetGlobalTarget(client->GetIndex());
+
+    char sTitle[32];
+    util->Format(sTitle, 32, "%t", 1, "Menu Track Title");
+    menu->SetDefaultTitle(sTitle);
 
     menu->SetPagination(6);
 
@@ -72,7 +77,7 @@ CLIENT_COMMAND(track, "Opens the track selection menu")
         smutils->Format(info, 4, "%d", i);
 
         char desc[16];
-        smutils->Format(desc, 16, "%d", i);
+        util->GetTrackName(desc, 16, i);
 
         menu->AppendItem(info, ItemDrawInfo(desc));
     }
