@@ -314,5 +314,10 @@ unsigned int CMapZones::GetTrackCount()
     return m_vStartZones.length();
 }
 
+unsigned int CMapZones::GetCPCount(int track)
+{
+    return m_vCheckpointZones[track].length();
+}
+
 static CMapZones _mapzones;
 CMapZones *mapzones = &_mapzones;

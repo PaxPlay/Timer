@@ -110,6 +110,9 @@ void CUtility::GetTrackName(char *buffer, int maxlen, int track)
 
 void CUtility::FormatTime(char *buffer, int maxlen, float time, int precision)
 {
+    char sTmp[16];
+    buffer[0] = 0; // force the string to be 'empty'
+
     if (time > 3600.0f)
     {
         int hours = (int)(time / 3600.0f);
@@ -121,19 +124,15 @@ void CUtility::FormatTime(char *buffer, int maxlen, float time, int precision)
     if (time > 60.0f || buffer[0])
     {
         int minutes = (int)(time / 60.0f);
-        smutils->Format(buffer, maxlen, "%s%2d:", buffer, minutes);
+        smutils->Format(sTmp, 16, "%02d:", minutes);
+
+        strncat(buffer, sTmp, maxlen);
 
         time -= minutes * 60.0f;
     }
 
-    char fmt[] = "%s%.xf";
-
-    if (precision > 0 && precision < 10)
-        fmt[4] = '0' + precision;
-    else
-        fmt[4] = '3';
-
-    smutils->Format(buffer, maxlen, fmt, buffer, time);
+    smutils->Format(sTmp, 16, "%0*.*f", precision + 3, precision, time);
+    strncat(buffer, sTmp, maxlen);
 }
 
 int CUtility::EntPropDataOffset(CBaseEntity *pEntity, const char *prop)

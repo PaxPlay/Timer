@@ -185,24 +185,24 @@ void CTimerClient::ReachCheckpoint(float time)
     util->GetTrackName(sTrack, 16, m_iTrack);
 
     char sTime[32];
-    util->FormatTime(sTime, 32, m_flTime, 0);
+    util->FormatTime(sTime, 32, m_flTime);
 
     PrintToChat("%t", 4, "Timer Checkpoint Reached", sTrack, &m_iCurrentCP, sTime);
 }
 
 void CTimerClient::Finish()
 {
-    smutils->LogMessage(myself, "%s finished with %.3f seconds on track %d.", m_pGamePlayer->GetName(), m_flTime, m_iTrack);
-
     smutils->SetGlobalTarget(m_iIndex);
 
     char sTrack[16];
     util->GetTrackName(sTrack, 16, m_iTrack);
 
     char sTime[32];
-    util->FormatTime(sTime, 32, m_flTime, 0);
+    util->FormatTime(sTime, 32, m_flTime);
 
     PrintToChat("%t", 3, "Timer Finished", sTrack, sTime);
+
+    smutils->LogMessage(myself, "[%s] %s finished with a time of %s.", sTrack, m_pGamePlayer->GetName(), sTime);
 }
 
 void CTimerClient::OnClientPutInServer()

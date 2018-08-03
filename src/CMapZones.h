@@ -88,6 +88,8 @@ public:
     void TeleportEntityToZone(CBaseEntity *pEntity, ZoneType type, int track, int cpnum = 0);
 
     unsigned int GetTrackCount();
+
+    unsigned int GetCPCount(int track);
 private:
     bool RegisterZone(CBaseEntity *pEntity, const char* identifier, int track);
     CBaseZone *GetZone(ZoneType type, int track, int cpnum = 0);
