@@ -68,6 +68,10 @@ bool TimerExtension::SDK_OnLoad(char *error, size_t maxlength, bool late)
         return false;
     }
 
+    icvar->FindVar("sv_hudhint_sound")->SetValue(false);
+    icvar->FindVar("sv_enablebunnyhopping")->SetValue(true);
+    icvar->FindVar("sv_airaccelerate")->SetValue(1000);
+
     return true;
 }
 

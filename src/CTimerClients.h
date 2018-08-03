@@ -30,6 +30,8 @@ public:
     void PrintToConsole(const char *format, int argc = 0, ...);
 
 public: // Timer stuff
+    bool ToggleNoclip();
+
     /**
      * Starts a client's timer on the specified track. If a timer is already running, it will be ignored.
      * @param track         Track index.
@@ -68,7 +70,7 @@ private:
     bool m_bRunning;
     int m_iTrack;
     int m_iCurrentCP;
-    float m_fTime;
+    float m_flTime;
 
     // settings
     int m_iHudIndex;
@@ -76,6 +78,17 @@ private:
     bool m_bBhopBlocked;
 
     unsigned int m_iTicksOnGround;
+
+public:
+    Vector GetVelocity();
+    int GetFlags();
+
+private:
+    // ent props
+    MoveType_t *m_MoveType;
+    Vector *m_vecVelocity;
+    float *m_flStamina;
+    int *m_fFlags;
 };
 
 class CTimerClients : public ITimedEvent

@@ -2,6 +2,7 @@
 #include "CClientCommands.h"
 #include "CTimerClients.h"
 #include "CMapZones.h"
+#include "CUtility.h"
 
 ///////////////////////////////////////////////////////////////////////////
 // tm_help
@@ -61,14 +62,12 @@ static TrackMenuHandler s_TrackMenuHandler;
 
 CLIENT_COMMAND(tm_track, "Opens the track selection menu")
 {
-
     IBaseMenu *menu = menus->GetDefaultStyle()->CreateMenu(&s_TrackMenuHandler);
     menu->SetDefaultTitle("Select a track");
 
     menu->SetPagination(6);
 
-    for (unsigned int i = 0; i < mapzones->GetTrackCount(); i++)
-    {
+    for (unsigned int i = 0; i < mapzones->GetTrackCount(); i++) {
         char info[4];
         smutils->Format(info, 4, "%d", i);
 
@@ -82,3 +81,11 @@ CLIENT_COMMAND(tm_track, "Opens the track selection menu")
 }
 
 CLIENT_COMMAND_ALIAS(tm_bonus, tm_track);
+
+///////////////////////////////////////////////////////////////////////////
+// tm_noclip
+
+CLIENT_COMMAND(tm_nc, "Noclip.")
+{
+    client->ToggleNoclip();
+}

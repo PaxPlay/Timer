@@ -71,7 +71,7 @@ void CStartZone::Touch(CBaseEntity *pOther)
     if (!client)
         return;
 
-    int flags = *util->EntPropData<int>(pOther, "m_fFlags");
+    int flags = client->GetFlags();
 
     if (!(flags & FL_ONGROUND))
     {

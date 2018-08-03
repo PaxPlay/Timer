@@ -18,8 +18,10 @@ CTimerClient::CTimerClient(int index) :
         m_bRunning(false),
         m_iTrack(0),
         m_iCurrentCP(0),
-        m_fTime(0.0f),
-        m_iHudIndex(0)
+        m_flTime(0.0f),
+        m_iHudIndex(0),
+        m_bBhopBlocked(false),
+        m_iTicksOnGround(0)
 {
 }
 
@@ -67,14 +69,43 @@ void CTimerClient::PrintToConsole(const char *format, int argc, ...)
     util->PrintToConsoleVA(m_iIndex, format, argc, list);
 }
 
+bool CTimerClient::ToggleNoclip()
+{
+    if (m_bRunning)
+    {
+        PrintToChat("Your timer was stopped for using noclip.");
+        StopTimer(false, m_iTrack);
+    }
+
+    if (*m_MoveType == MOVETYPE_NOCLIP)
+    {
+        *m_MoveType = MOVETYPE_WALK;
+        return false;
+    }
+    else
+    {
+        *m_MoveType = MOVETYPE_NOCLIP;
+        return true;
+    }
+}
+
 void CTimerClient::StartTimer(int track)
 {
     if (m_bRunning)
         return;
 
+    if (*m_MoveType == MOVETYPE_NOCLIP)
+        return;
+
+    if (m_vecVelocity->Length2DSqr() > 290.0f * 290.0f)
+    {
+        Vector newVel(0.0f, 0.0f, 0.0f);
+        vfuncs->TeleportEntity(m_pEntity, nullptr, nullptr, &newVel);
+    }
+
     m_iTrack = track;
     m_iCurrentCP = 0;
-    m_fTime = 0.0f;
+    m_flTime = 0.0f;
     m_bRunning = true;
 }
 
@@ -83,7 +114,7 @@ void CTimerClient::CheckpointReached(int track, int index, float offset)
     if (m_bRunning && track == m_iTrack && index > m_iCurrentCP)
     {
         m_iCurrentCP = index;
-        ReachCheckpoint(m_fTime - offset);
+        ReachCheckpoint(m_flTime - offset);
     }
 }
 
@@ -94,20 +125,18 @@ void CTimerClient::StopTimer(bool finish, int track, float offset)
 
     if (finish)
     {
-        m_fTime -= offset;
+        m_flTime -= offset;
 
         Finish();
 
         m_iCurrentCP = 0;
-        m_fTime = 0.0f;
+        m_flTime = 0.0f;
         m_bRunning = false;
     }
     else
     {
-        PrintToChat("Your timer was stopped.");
-
         m_iCurrentCP = 0;
-        m_fTime = 0.0f;
+        m_flTime = 0.0f;
         m_bRunning = false;
     }
 }
@@ -129,7 +158,7 @@ int CTimerClient::GetCurrentCP()
 
 float CTimerClient::GetCurrentTime()
 {
-    return m_fTime;
+    return m_flTime;
 }
 
 int CTimerClient::GetSelectedHud()
@@ -149,8 +178,8 @@ void CTimerClient::ReachCheckpoint(float time)
 
 void CTimerClient::Finish()
 {
-    smutils->LogMessage(myself, "%s finished with %.3f seconds on track %d.", m_pGamePlayer->GetName(), m_fTime, m_iTrack);
-    PrintToChat("You finished with a time of %.3f seconds on track %d.", 2, &m_fTime, &m_iTrack);
+    smutils->LogMessage(myself, "%s finished with %.3f seconds on track %d.", m_pGamePlayer->GetName(), m_flTime, m_iTrack);
+    PrintToChat("You finished with a time of %.3f seconds on track %d.", 2, &m_flTime, &m_iTrack);
 }
 
 void CTimerClient::OnClientPutInServer()
@@ -159,17 +188,21 @@ void CTimerClient::OnClientPutInServer()
     m_pEdict = gamehelpers->EdictOfIndex(m_iIndex);
     m_pEntity = m_pEdict->GetUnknown()->GetBaseEntity();
 
+    m_MoveType = util->EntPropData<MoveType_t>(m_pEntity, "m_MoveType");
+    m_vecVelocity = util->EntPropData<Vector>(m_pEntity, "m_vecVelocity");
+    m_flStamina = util->EntPropData<float>(m_pEntity, "m_flStamina");
+    m_fFlags = util->EntPropData<int>(m_pEntity, "m_fFlags");
+
     SH_ADD_MANUALHOOK_MEMFUNC(PlayerRunCmd, m_pEntity, this, &CTimerClient::PlayerRunCmd, false);
 }
 
 void CTimerClient::PlayerRunCmd(CUserCmd *pCmd, IMoveHelper *movehelper)
 {
-    int flags = *util->EntPropData<int>(m_pEntity, "m_fFlags");
-    if (pCmd->buttons & IN_JUMP && !(flags & FL_ONGROUND))
+    if (pCmd->buttons & IN_JUMP && !(*m_fFlags & FL_ONGROUND))
         pCmd->buttons &= ~IN_JUMP;
 
 
-    if (flags & FL_ONGROUND)
+    if (*m_fFlags & FL_ONGROUND)
         m_iTicksOnGround++;
     else
         m_iTicksOnGround = 0;
@@ -184,7 +217,7 @@ void CTimerClient::Jump()
 {
     if (m_bBhopBlocked)
     {
-        if (util->EntPropData<Vector>(m_pEntity, "m_vecVelocity")->Length2DSqr() > 290 * 290)
+        if (m_vecVelocity->Length2DSqr() > 290 * 290)
         {
             Vector vel(0.0f, 0.0f, 0.0f);
             vfuncs->TeleportEntity(m_pEntity, nullptr, nullptr, &vel);
@@ -192,13 +225,31 @@ void CTimerClient::Jump()
         }
     }
 
-    *util->EntPropSend<float>(m_pEntity, "m_flStamina") = 0.0f;
+    *m_flStamina = 0.0f;
 }
 
 void CTimerClient::GameFrame()
 {
     if (m_bRunning)
-        m_fTime += globals->frametime;
+    {
+        if (*m_MoveType == MOVETYPE_NOCLIP)
+        {
+            StopTimer(false, m_iTrack);
+            return;
+        }
+
+        m_flTime += globals->frametime;
+    }
+}
+
+Vector CTimerClient::GetVelocity()
+{
+    return *m_vecVelocity;
+}
+
+int CTimerClient::GetFlags()
+{
+    return *m_fFlags;
 }
 
 bool CTimerClients::CreateClient(int index) {
@@ -248,7 +299,7 @@ void CTimerClients::ReconfigureHooks()
 
     smutils->AddGameFrameHook(GameFrame);
 
-    timersys->CreateTimer(this, 1.0, nullptr, TIMER_FLAG_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+    timersys->CreateTimer(this, 0.1, nullptr, TIMER_FLAG_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 }
 
 CTimerClient *CTimerClients::GetClient(CBaseEntity *pEntity)
