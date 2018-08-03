@@ -53,10 +53,16 @@ void CClientCommands::RegisterCommand(const char *cmd, CClientCommand callback)
     m_Commands->insert(cmd, cmdCallbacks);
 }
 
-bool CClientCommands::ProcessCommand(CTimerClient *client, const CCommand &args)
+bool CClientCommands::ProcessConsoleCommand(CTimerClient *client, const CCommand &args)
 {
+    const char *cmd = args[0];
+    if (!(strncmp(cmd, "t_", 2) == 0 && cmd[2]))
+        return false;
+
+    cmd += 2;
+
     ke::Vector<CClientCommand> *cmdCallbacks;
-    if (m_Commands->retrieve(args[0], &cmdCallbacks))
+    if (m_Commands->retrieve(cmd, &cmdCallbacks))
     {
         for (size_t i = 0; i < cmdCallbacks->length(); i++)
         {
@@ -65,6 +71,19 @@ bool CClientCommands::ProcessCommand(CTimerClient *client, const CCommand &args)
         return true;
     }
     return false;
+}
+
+bool CClientCommands::ProcessChatCommand(CTimerClient *client, const char *cmd)
+{
+    if ((cmd[0] != '!' && cmd[0] != '/') || !cmd[1])
+        return false;
+
+    cmd++;
+
+    if (m_Commands->contains(cmd))
+        engine->ClientCommand(client->GetEdict(), "t_%s", cmd);
+
+    return true;
 }
 
 void CClientCommands::ListCommands(CTimerClient *client)

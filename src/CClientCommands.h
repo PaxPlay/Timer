@@ -30,9 +30,11 @@ public:
 
     void RegisterCommand(const char *cmd, CClientCommand callback);
 
-    bool ProcessCommand(CTimerClient *client, const CCommand &args);
+    bool ProcessConsoleCommand(CTimerClient *client, const CCommand &args);
+    bool ProcessChatCommand(CTimerClient *client, const char *cmd);
 
     void ListCommands(CTimerClient *client = nullptr);
+
 private:
     SourceMod::StringHashMap<ke::Vector<CClientCommand> *> *m_Commands;
 };

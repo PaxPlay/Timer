@@ -7,7 +7,10 @@
 #include <shareddefs.h>
 #include <usercmd.h>
 
-class CHookManager : public ISMEntityListener, public IClientListener
+class CHookManager :
+        public ISMEntityListener,
+        public IClientListener,
+        public IBitBufUserMessageListener
 {
 public:
     void InitHooks();
@@ -28,6 +31,9 @@ public:
     //void OnClientPostAdminCheck(int client) override;
     //void OnMaxPlayersChanged(int newvalue) override;
     //void OnClientSettingsChanged(int client) override;
+
+    /* IBitBufUserMessageListener */
+    ResultType InterceptUserMessage(int msg_id, bf_write *bf, IRecipientFilter *pFilter) override;
 
     /* Custom Hooks */
     void Hook_ClientCommand(edict_t *pEntity, const CCommand &args);

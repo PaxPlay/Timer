@@ -45,6 +45,11 @@ CBaseEntity *CTimerClient::GetBaseEntity()
     return m_pEntity;
 }
 
+edict_t *CTimerClient::GetEdict()
+{
+    return m_pEdict;
+}
+
 bool CTimerClient::IsInGame()
 {
     if (!m_pGamePlayer)

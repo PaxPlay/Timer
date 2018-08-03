@@ -21,6 +21,7 @@ public:
     int GetIndex();
     IGamePlayer *GetGamePlayer();
     CBaseEntity *GetBaseEntity();
+    edict_t *GetEdict();
 
 public:
     bool IsInGame();

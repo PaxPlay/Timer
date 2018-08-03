@@ -62,13 +62,40 @@ void CHookManager::OnClientDisconnected(int client)
         timerclients->RemoveClient(client);
 }
 
+ResultType CHookManager::InterceptUserMessage(int msg_id, bf_write *bf, IRecipientFilter *pFilter)
+{
+    bf_read read;
+    read.StartReading(bf->GetData(), bf->GetNumBytesWritten());
+
+    int client;
+    char message[32];
+    char name[MAX_PLAYER_NAME_LENGTH];
+    char text[256];
+
+    client = read.ReadByte();
+    read.ReadByte();
+    read.ReadString(message, 32);
+    read.ReadString(name, MAX_PLAYER_NAME_LENGTH);
+    read.ReadString(text, 256);
+
+    CTimerClient *pClient = timerclients->GetClient(client);
+
+    if (clientcommands->ProcessChatCommand(pClient, text))
+        return Pl_Stop;
+
+    //bf->SeekToBit((2 * 8) + ((strlen(message) + 1) * 8) + ((strlen(name) + 1) * 8));
+    //bf->WriteString("Hello :)");
+
+    return Pl_Continue;
+}
+
 void CHookManager::Hook_ClientCommand(edict_t *pEntity, const CCommand &args)
 {
     CTimerClient *client = timerclients->GetClient(gamehelpers->IndexOfEdict(pEntity));
     if (!client)
         RETURN_META(MRES_IGNORED);
 
-    if (clientcommands->ProcessCommand(client, args))
+    if (clientcommands->ProcessConsoleCommand(client, args))
         RETURN_META(MRES_SUPERCEDE);
     else
         RETURN_META(MRES_IGNORED);

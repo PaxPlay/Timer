@@ -56,6 +56,7 @@ bool TimerExtension::SDK_OnLoad(char *error, size_t maxlength, bool late)
     }
 
     gameevents->AddListener(eventmanager, "player_jump", true);
+    usermsgs->HookUserMessage2(usermsgs->GetMessageIndex("SayText2"), hooks, true);
 
     hooks->InitHooks();
 
@@ -82,6 +83,11 @@ void TimerExtension::SDK_OnUnload()
 
     phrases->Destroy();
     hooks->RemoveHooks();
+
+    rootconsole->RemoveRootConsoleCommand("timer", &rcmds);
+
+    gameevents->RemoveListener(eventmanager);
+    usermsgs->UnhookUserMessage2(usermsgs->GetMessageIndex("SayText2"), hooks, true);
 
     if (QueryRunning(nullptr, 0))
     {

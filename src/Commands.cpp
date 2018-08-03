@@ -5,28 +5,28 @@
 #include "CUtility.h"
 
 ///////////////////////////////////////////////////////////////////////////
-// tm_help
+// help
 
-CLIENT_COMMAND(tm_help, "Shows available commands")
+CLIENT_COMMAND(help, "Shows available commands")
 {
     client->PrintToChat("Open you console to see available commands.");
     clientcommands->ListCommands(client);
 }
 
-CLIENT_COMMAND_ALIAS(tm_cmds, tm_help);
+CLIENT_COMMAND_ALIAS(cmds, help);
 
 ///////////////////////////////////////////////////////////////////////////
-// tm_r
+// r
 
-CLIENT_COMMAND(tm_r, "Teleport to the current start zone")
+CLIENT_COMMAND(r, "Teleport to the current start zone")
 {
     mapzones->TeleportEntityToZone(client->GetBaseEntity(), ZoneType::START, client->GetCurrentTrack());
 }
 
-CLIENT_COMMAND_ALIAS(tm_start, tm_r);
+CLIENT_COMMAND_ALIAS(start, r);
 
 ///////////////////////////////////////////////////////////////////////////
-// tm_track
+// track
 
 class TrackMenuHandler : public IMenuHandler
 {
@@ -60,7 +60,7 @@ class TrackMenuHandler : public IMenuHandler
 
 static TrackMenuHandler s_TrackMenuHandler;
 
-CLIENT_COMMAND(tm_track, "Opens the track selection menu")
+CLIENT_COMMAND(track, "Opens the track selection menu")
 {
     IBaseMenu *menu = menus->GetDefaultStyle()->CreateMenu(&s_TrackMenuHandler);
     menu->SetDefaultTitle("Select a track");
@@ -80,12 +80,12 @@ CLIENT_COMMAND(tm_track, "Opens the track selection menu")
     menu->Display(client->GetIndex(), MENU_TIME_FOREVER);
 }
 
-CLIENT_COMMAND_ALIAS(tm_bonus, tm_track);
+CLIENT_COMMAND_ALIAS(bonus, track);
 
 ///////////////////////////////////////////////////////////////////////////
-// tm_noclip
+// noclip
 
-CLIENT_COMMAND(tm_nc, "Noclip.")
+CLIENT_COMMAND(nc, "Noclip.")
 {
     client->ToggleNoclip();
 }
