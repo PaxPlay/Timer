@@ -10,6 +10,7 @@
 
 class CUserCmd;
 class IMoveHelper;
+class CTakeDamageInfo;
 
 class CTimerClient
 {
@@ -60,6 +61,7 @@ private:
 public: // Hooks
     void OnClientPutInServer();
     void PlayerRunCmd(CUserCmd *pCmd, IMoveHelper *movehelper);
+    int OnTakeDamage(const CTakeDamageInfo &info);
     void Jump();
 
     void GameFrame();

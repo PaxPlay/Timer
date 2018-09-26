@@ -10,7 +10,23 @@
 #include <const.h>
 #include <in_buttons.h>
 
+// for some reason all of these includes are needed for takedamageinfo...
+#include <isaverestore.h>
+
+#ifndef _DEBUG
+#include <ehandle.h>
+#else
+#undef _DEBUG
+#include <ehandle.h>
+#define _DEBUG 1
+#endif
+
+#include <server_class.h>
+#include <takedamageinfo.h>
+
+
 SH_DECL_MANUALHOOK2_void(PlayerRunCmd, 0, 0, 0, CUserCmd *, IMoveHelper *);
+SH_DECL_MANUALHOOK1(OnTakeDamage, 0, 0, 0, int, const CTakeDamageInfo &);
 
 CTimerClient::CTimerClient(int index) :
         m_iIndex(index),
@@ -28,6 +44,7 @@ CTimerClient::CTimerClient(int index) :
 CTimerClient::~CTimerClient()
 {
     SH_REMOVE_MANUALHOOK_MEMFUNC(PlayerRunCmd, m_pEntity, this, &CTimerClient::PlayerRunCmd, false);
+    SH_REMOVE_MANUALHOOK_MEMFUNC(OnTakeDamage, m_pEntity, this, &CTimerClient::OnTakeDamage, false);
 }
 
 int CTimerClient::GetIndex()
@@ -217,6 +234,7 @@ void CTimerClient::OnClientPutInServer()
     m_fFlags = util->EntPropData<int>(m_pEntity, "m_fFlags");
 
     SH_ADD_MANUALHOOK_MEMFUNC(PlayerRunCmd, m_pEntity, this, &CTimerClient::PlayerRunCmd, false);
+    SH_ADD_MANUALHOOK_MEMFUNC(OnTakeDamage, m_pEntity, this, &CTimerClient::OnTakeDamage, false);
 }
 
 void CTimerClient::PlayerRunCmd(CUserCmd *pCmd, IMoveHelper *movehelper)
@@ -234,6 +252,11 @@ void CTimerClient::PlayerRunCmd(CUserCmd *pCmd, IMoveHelper *movehelper)
     {
         pCmd->buttons &= ~IN_JUMP;
     }
+}
+
+int CTimerClient::OnTakeDamage(const CTakeDamageInfo &info)
+{
+    RETURN_META_VALUE(MRES_SUPERCEDE, 1);
 }
 
 void CTimerClient::Jump()
@@ -312,13 +335,17 @@ void GameFrame(bool simulating)
     }
 }
 
+#define RECONFIGURE_HOOK(hook, conf) \
+            if (gameconf[conf]->GetOffset(#hook, &offset))             \
+                SH_MANUALHOOK_RECONFIGURE(hook, offset, 0, 0);                      \
+            else                                                                    \
+            smutils->LogError(myself, "Couldn't find the " #hook " offset.");
+
 void CTimerClients::ReconfigureHooks()
 {
     int offset;
-    if (gameconf[GAMECONF_SDKTOOLS]->GetOffset("PlayerRunCmd", &offset))
-        SH_MANUALHOOK_RECONFIGURE(PlayerRunCmd, offset, 0, 0);
-    else
-        smutils->LogError(myself, "Couldn't find the PlayerRunCmd offset.");
+    RECONFIGURE_HOOK(PlayerRunCmd, GAMECONF_SDKTOOLS);
+    RECONFIGURE_HOOK(OnTakeDamage, GAMECONF_SDKHOOKS);
 
     smutils->AddGameFrameHook(GameFrame);
 }
