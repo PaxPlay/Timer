@@ -27,6 +27,7 @@ public:
     bool IsInGame();
 
 public:
+    // This functions just wrap their equivalents in CUtility
     void PrintToChat(const char *format, int argc = 0, ...);
     void PrintToConsole(const char *format, int argc = 0, ...);
 
@@ -38,6 +39,8 @@ public: // Timer stuff
      * @param track         Track index.
      */
     void StartTimer(int track);
+
+    // TODO: this stuff could need some refactoring
 
     void CheckpointReached(int track, int index, float offset = 0.0f);
     void StopTimer(bool finish, int track, float offset = 0.0f);
@@ -81,6 +84,7 @@ private:
     unsigned int m_iTicksOnGround;
 
 public:
+    // get some ent props
     Vector GetVelocity();
     int GetFlags();
 

@@ -1,5 +1,6 @@
 #include <amtl/am-string.h>
 
+#include "extension.h"
 #include "CMapZones.h"
 #include "CTimerClients.h"
 #include "CUtility.h"
@@ -146,6 +147,11 @@ void CCheckpointZone::StartTouch(CBaseEntity *pOther)
     client->CheckpointReached(m_iTrack, m_iIndex);
 }
 
+CMapZones::~CMapZones()
+{
+    ClearZones();
+}
+
 bool CMapZones::RegisterZone(CBaseEntity *pEntity, ZoneType type, int track, int cpnum)
 {
     switch (type)
@@ -226,6 +232,31 @@ bool CMapZones::RegisterZone(CBaseEntity *pEntity, const char *identifier, int t
     }
 
     return false;
+}
+
+void CMapZones::ClearZones()
+{
+    for (size_t i = 0; i < m_vStartZones.length(); i++)
+    {
+        delete m_vStartZones[i];
+    }
+    m_vStartZones.clear();
+
+    for (size_t i = 0; i < m_vEndZones.length(); i++)
+    {
+        delete m_vEndZones[i];
+    }
+    m_vEndZones.clear();
+
+    for (size_t i = 0; i < m_vCheckpointZones.length(); i++)
+    {
+        for (size_t j = 0; j < m_vCheckpointZones[i].length(); j++)
+        {
+            delete m_vCheckpointZones[i][j];
+        }
+        m_vCheckpointZones[i].clear();
+    }
+    m_vCheckpointZones.clear();
 }
 
 void CMapZones::PrintZones()
@@ -314,8 +345,10 @@ unsigned int CMapZones::GetTrackCount()
     return m_vStartZones.length();
 }
 
-unsigned int CMapZones::GetCPCount(int track)
+unsigned int CMapZones::GetCPCount(unsigned int track)
 {
+    if (m_vCheckpointZones.length() <= track)
+        return 0u;
     return m_vCheckpointZones[track].length();
 }
 

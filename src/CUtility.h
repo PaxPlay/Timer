@@ -101,8 +101,21 @@ public:
         return (T*)((uintptr_t)pEntity + offset);
     }
 
+    /**
+     *
+     * @param buffer
+     * @param maxlen
+     * @param track
+     */
     void GetTrackName(char *buffer, int maxlen, int track);
 
+    /**
+     * Formats the time into [hours:][minutes:]seconds.
+     * @param buffer        Buffer to write to.
+     * @param maxlen        Maximum amount of bytes to write.
+     * @param time          Time in seconds.
+     * @param precision     Precision.
+     */
     void FormatTime(char *buffer, int maxlen, float time, int precision = 3);
 
 private:

@@ -58,6 +58,8 @@ private:
 class CMapZones
 {
 public:
+    ~CMapZones();
+
     void PrintZones();
 
     /**
@@ -85,11 +87,13 @@ public:
      */
     bool RegisterZone(CBaseEntity *pEntity, const char* classname);
 
+    void ClearZones();
+
     void TeleportEntityToZone(CBaseEntity *pEntity, ZoneType type, int track, int cpnum = 0);
 
     unsigned int GetTrackCount();
 
-    unsigned int GetCPCount(int track);
+    unsigned int GetCPCount(unsigned int track);
 private:
     bool RegisterZone(CBaseEntity *pEntity, const char* identifier, int track);
     CBaseZone *GetZone(ZoneType type, int track, int cpnum = 0);

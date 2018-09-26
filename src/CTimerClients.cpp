@@ -321,8 +321,6 @@ void CTimerClients::ReconfigureHooks()
         smutils->LogError(myself, "Couldn't find the PlayerRunCmd offset.");
 
     smutils->AddGameFrameHook(GameFrame);
-
-    timersys->CreateTimer(this, 0.1, nullptr, TIMER_FLAG_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 }
 
 CTimerClient *CTimerClients::GetClient(CBaseEntity *pEntity)

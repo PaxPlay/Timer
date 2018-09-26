@@ -22,6 +22,15 @@ void CBasicHud::DrawTimerInformation(CTimerClient *client)
     char sTrack[16];
     util->GetTrackName(sTrack, 16, track);
 
+    unsigned int iCP = client->GetCurrentCP();
+    unsigned int iTotalCPs = mapzones->GetCPCount(track);
+    char sCP[16];
+    if (iTotalCPs)
+        smutils->Format(sCP, 16, "CP: %d/%d", iCP, iTotalCPs);
+    else
+        strncpy(sCP, "Linear", 16);
+
+
     if (client->IsRunning())
     {
         char sTime[32];
@@ -29,12 +38,11 @@ void CBasicHud::DrawTimerInformation(CTimerClient *client)
 
         smutils->Format(msg, 253,
                         "%s\n"
-                        "CP: %d/%d\n"
+                        "%s\n"
                         "Time: %s\n"
                         "Speed: %.3f",
                         sTrack,
-                        client->GetCurrentCP(),
-                        mapzones->GetCPCount(track),
+                        sCP,
                         sTime,
                         vel.Length2D());
     }

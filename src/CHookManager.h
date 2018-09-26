@@ -37,6 +37,7 @@ public:
 
     /* Custom Hooks */
     void Hook_ClientCommand(edict_t *pEntity, const CCommand &args);
+    bool Hook_LevelInit(char const *pMapName, char const *pMapEntities, char const *pOldLevel, char const *pLandmarkName, bool loadGame, bool background);
 };
 
 extern CHookManager *hooks;
