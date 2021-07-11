@@ -9,6 +9,7 @@
 #include "smsdk_ext.h"
 
 #include <engine/IEngineTrace.h>
+#include <ISDKTools.h>
 
 /* GameConfs */
 enum
@@ -29,6 +30,7 @@ extern ICvar *icvar;
 extern CGlobalVars *globals;
 
 extern IPhraseCollection *phrases;
+extern ISDKTools* sdktools;
 
 /**
  * @brief Sample implementation of the SDK Extension.

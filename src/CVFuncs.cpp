@@ -12,27 +12,17 @@ void CVFuncs::TeleportEntity(CBaseEntity *pEntity, const Vector *pos, const QAng
 	
 }
 
+QAngle CVFuncs::EyeAngles(CBaseEntity* pEntity)
+{
+    int offset;
+    if (!gameconf[GAMECONF_SDKTOOLS]->GetOffset("EyeAngles", &offset))
+        smutils->LogError(myself, "Couldn't get EyeAngles offset.");
+    return CallVFunc<QAngle>(pEntity, offset);
+}
+
 template < typename T1, typename ... T2>
 T1 CVFuncs::CallVFunc(void *pObj, int vTableOffset, T2 ... args)
-{
-    /*
-    void** this_ptr = *(void***)&pEntity;
-    void** vtable = *(void***)pEntity;
-    void* func = vtable[offset];
-
-    union {
-        void (VFuncClass::* mfpnew)(const Vector*, const QAngle*, const Vector*);
-#ifndef __linux__
-        void* addr;
-    } u; 	u.addr = func;
-#else // GCC's member function pointers all contain a this pointer adjustor. You'd probably set it to 0
-        struct { void* addr; intptr_t adjustor; } s;
-} u; u.s.addr = func; u.s.adjustor = 0;
-#endif
-
-    (void)(reinterpret_cast<VFuncClass*>(this_ptr)->*u.mfpnew)(pos, ang, vel);
-    */
-	
+{	
     auto vptr = reinterpret_cast<void***>(pObj);
 
     union

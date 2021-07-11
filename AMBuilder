@@ -21,6 +21,7 @@ sourceFiles = [
   'CBaseHud.cpp',
   'CClientCommands.cpp',
   'Commands.cpp',
+  'CAssetManager.cpp',
 ]
 
 includeDirectorys = [

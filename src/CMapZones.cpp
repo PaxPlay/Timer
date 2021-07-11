@@ -311,7 +311,8 @@ void CMapZones::TeleportEntityToZone(CBaseEntity *pEntity, ZoneType type, int tr
 
     // TODO: this might teleport people into the ground
     Vector origin = *util->EntPropData<Vector>(pZoneEntity, "m_vecOrigin");
-    vfuncs->TeleportEntity(pEntity, &origin, nullptr, nullptr);
+    Vector vel = Vector{ 0.0f, 0.0f, 0.0f };
+    vfuncs->TeleportEntity(pEntity, &origin, nullptr, &vel);
 }
 
 CBaseZone *CMapZones::GetZone(ZoneType type, int track, int cpnum)

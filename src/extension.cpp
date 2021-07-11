@@ -2,13 +2,18 @@
 #include <igameevents.h>
 
 #include "extension.h"
+
+#include <iserver.h>
+
 #include "CHookManager.h"
 #include "CRootConsoleCmds.h"
 #include "CMapZones.h"
 #include "CTimerClients.h"
 #include "CGameEventManager.h"
+#include "CAssetManager.h"
 
 ISDKHooks *sdkhooks = nullptr;
+ISDKTools* sdktools = nullptr;
 
 IServerGameClients *gameclients = nullptr;
 IServerGameEnts *gameents = nullptr;
@@ -73,7 +78,9 @@ bool TimerExtension::SDK_OnLoad(char *error, size_t maxlength, bool late)
     icvar->FindVar("sv_enablebunnyhopping")->SetValue(true);
     icvar->FindVar("sv_airaccelerate")->SetValue(1000);
 
-    return true;
+    assetmanager->precache();
+	
+	return true;
 }
 
 void TimerExtension::SDK_OnUnload()
@@ -100,7 +107,8 @@ void TimerExtension::SDK_OnUnload()
 void TimerExtension::SDK_OnAllLoaded()
 {
     SM_GET_LATE_IFACE(SDKHOOKS, sdkhooks);
-
+    SM_GET_LATE_IFACE(SDKTOOLS, sdktools);
+	
     playerhelpers->AddClientListener(hooks);
 
     if (QueryRunning(nullptr, 0))
@@ -118,6 +126,7 @@ void TimerExtension::SDK_OnPauseChange(bool paused)
 bool TimerExtension::QueryRunning(char *error, size_t maxlength)
 {
     SM_CHECK_IFACE(SDKHOOKS, sdkhooks);
+    SM_CHECK_IFACE(SDKTOOLS, sdktools);
 
     return true;
 }
