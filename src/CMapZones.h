@@ -99,9 +99,9 @@ private:
     CBaseZone *GetZone(ZoneType type, int track, int cpnum = 0);
 
 private:
-    ke::Vector<CStartZone *> m_vStartZones;
-    ke::Vector<CEndZone *> m_vEndZones;
-    ke::Vector<ke::Vector<CCheckpointZone *>> m_vCheckpointZones;
+    std::vector<CStartZone *> m_vStartZones;
+    std::vector<CEndZone *> m_vEndZones;
+    std::vector<std::vector<CCheckpointZone *>> m_vCheckpointZones;
 };
 
 extern CMapZones *mapzones;

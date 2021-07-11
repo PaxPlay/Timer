@@ -8,6 +8,7 @@ class CTimerClient;
 class CBaseHud
 {
 public:
+    virtual ~CBaseHud() = default;
     virtual const char *GetName() = 0;
 
 public:
@@ -18,7 +19,6 @@ class CBasicHud : public CBaseHud
 {
 public:
     const char *GetName() override;
-
 public:
     void DrawTimerInformation(CTimerClient *client) override;
 };

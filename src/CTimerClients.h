@@ -141,7 +141,7 @@ public:
     ResultType OnTimer(ITimer *pTimer, void *pData) override;
     void OnTimerEnd(ITimer *pTimer, void *pData) override;
 private:
-    ke::Vector<CBaseHud *> m_vHuds;
+    std::vector<CBaseHud *> m_vHuds;
     CTimerClient *m_Clients[MAX_PLAYERS - 1];
 };
 

@@ -360,24 +360,24 @@ CTimerClient *CTimerClients::GetClient(CBaseEntity *pEntity)
 
 bool CTimerClients::RegisterHud(CBaseHud *hud)
 {
-    for (size_t i = 0; i < m_vHuds.length(); i++)
+    for (size_t i = 0; i < m_vHuds.size(); i++)
     {
         if (strcmp(hud->GetName(), m_vHuds[i]->GetName()) == 0)
             return false;
     }
 
-    m_vHuds.append(hud);
+    m_vHuds.push_back(hud);
     return true;
 }
 
 bool CTimerClients::RemoveHud(const char *name)
 {
-    for (size_t i = 0; i < m_vHuds.length(); i++)
+    for (size_t i = 0; i < m_vHuds.size(); i++)
     {
         if (strcmp(name, m_vHuds[i]->GetName()) == 0)
         {
             delete m_vHuds[i];
-            m_vHuds.remove(i);
+            m_vHuds.erase(m_vHuds.begin() + i);
             return true;
         }
     }

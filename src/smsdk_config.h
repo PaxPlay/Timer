@@ -2,6 +2,7 @@
 #define TIMER_SMSDK_CONFIG_H
 
 #include "version.h"
+//#define TIMER_COMMIT "SNAPSHOT"
 
 /**
  * @file smsdk_config.h
@@ -11,7 +12,7 @@
 /* Basic information exposed publicly */
 #define SMEXT_CONF_NAME			"Timer"
 #define SMEXT_CONF_DESCRIPTION	"Timer plugin or smth."
-#define SMEXT_CONF_VERSION		TIMER_MAJOR "." TIMER_MINOR "." TIMER_COMMIT TIMER_SUFFIX // set in build script
+#define SMEXT_CONF_VERSION		TIMER_MAJOR "." TIMER_MINOR /* "." TIMER_COMMIT */ TIMER_SUFFIX // set in build script
 #define SMEXT_CONF_AUTHOR		"PaxPlay"
 #define SMEXT_CONF_URL			"https://paxplay.me/"
 #define SMEXT_CONF_LOGTAG		"TIMER"

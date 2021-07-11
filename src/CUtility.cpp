@@ -14,11 +14,11 @@ int CUtility::Format(char *buffer, const size_t maxlength, const char *format, c
 
 int CUtility::FormatVA(char *buffer, const size_t maxlength, const char *format, const int argc, va_list va_args)
 {
-    void *params[argc];
+    auto *params = new void*[argc];
     size_t written;
     const char *err;
 
-    for (int i = 0; i < argc; i++) {
+    for (size_t i = 0; i < argc; i++) {
         params[i] = va_arg(va_args, void*);
     }
 

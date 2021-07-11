@@ -1,5 +1,5 @@
 #ifndef TIMER_CCLIENTCOMMANDS_H
-#define TIMER_CLIENTCOMMANDS_H
+#define TIMER_CCLIENTCOMMANDS_H
 
 #include <amtl/am-vector.h>
 #include <sm_stringhashmap.h>
@@ -36,7 +36,7 @@ public:
     void ListCommands(CTimerClient *client = nullptr);
 
 private:
-    SourceMod::StringHashMap<ke::Vector<CClientCommand> *> *m_Commands;
+    SourceMod::StringHashMap<std::vector<CClientCommand> *> *m_Commands;
 };
 
 extern CClientCommands *clientcommands;

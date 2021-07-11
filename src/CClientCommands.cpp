@@ -23,7 +23,7 @@ void CClientCommand::operator()(CTimerClient *client, const CCommand &args)
 CClientCommands::CClientCommands()
 {
     if (!m_Commands)
-        m_Commands = new SourceMod::StringHashMap<ke::Vector<CClientCommand> *>;
+        m_Commands = new SourceMod::StringHashMap<std::vector<CClientCommand> *>;
 }
 
 CClientCommands::~CClientCommands()
@@ -40,16 +40,16 @@ CClientCommands::~CClientCommands()
 void CClientCommands::RegisterCommand(const char *cmd, CClientCommand callback)
 {
     if (!m_Commands) // initialize if this got called BEFORE the constructor
-        m_Commands = new SourceMod::StringHashMap<ke::Vector<CClientCommand> *>;
+        m_Commands = new SourceMod::StringHashMap<std::vector<CClientCommand> *>;
 
-    ke::Vector<CClientCommand> *cmdCallbacks;
+    std::vector<CClientCommand> *cmdCallbacks;
     if (m_Commands->retrieve(cmd, &cmdCallbacks))
     {
-        cmdCallbacks->append(callback);
+        cmdCallbacks->push_back(callback);
     }
 
-    cmdCallbacks = new ke::Vector<CClientCommand>;
-    cmdCallbacks->append(callback);
+    cmdCallbacks = new std::vector<CClientCommand>;
+    cmdCallbacks->push_back(callback);
     m_Commands->insert(cmd, cmdCallbacks);
 }
 
@@ -61,10 +61,10 @@ bool CClientCommands::ProcessConsoleCommand(CTimerClient *client, const CCommand
 
     cmd += 2;
 
-    ke::Vector<CClientCommand> *cmdCallbacks;
+    std::vector<CClientCommand> *cmdCallbacks;
     if (m_Commands->retrieve(cmd, &cmdCallbacks))
     {
-        for (size_t i = 0; i < cmdCallbacks->length(); i++)
+        for (size_t i = 0; i < cmdCallbacks->size(); i++)
         {
             (*cmdCallbacks)[i](client, args);
         }
@@ -104,12 +104,12 @@ void CClientCommands::ListCommands(CTimerClient *client)
 
     for (auto iterator = m_Commands->iter(); !iterator.empty(); iterator.next())
     {
-        PrintOption(iterator->key.chars(), iterator->value->at(0).GetDescription());
+        PrintOption(iterator->key.c_str(), iterator->value->at(0).GetDescription());
 
         // If there's more than one handler listening to the same command, print all of them.
-        for (size_t i = 1; i < iterator->value->length(); i++)
+        for (size_t i = 1; i < iterator->value->size(); i++)
         {
-            PrintOption(iterator->key.chars(), iterator->value->at(i).GetDescription());
+            PrintOption(iterator->key.c_str(), iterator->value->at(i).GetDescription());
         }
     }
 }

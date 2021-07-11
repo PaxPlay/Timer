@@ -24,9 +24,9 @@ static int _stoi(const char *str, int *res) // returns the number of consumed ch
 }
 
 template <typename T>
-static void resize(ke::Vector<T> &v, size_t size)
+static void resize(std::vector<T> &v, size_t size)
 {
-    if (v.length() < size)
+    if (v.size() < size)
         v.resize(size);
 }
 
@@ -236,21 +236,21 @@ bool CMapZones::RegisterZone(CBaseEntity *pEntity, const char *identifier, int t
 
 void CMapZones::ClearZones()
 {
-    for (size_t i = 0; i < m_vStartZones.length(); i++)
+    for (size_t i = 0; i < m_vStartZones.size(); i++)
     {
         delete m_vStartZones[i];
     }
     m_vStartZones.clear();
 
-    for (size_t i = 0; i < m_vEndZones.length(); i++)
+    for (size_t i = 0; i < m_vEndZones.size(); i++)
     {
         delete m_vEndZones[i];
     }
     m_vEndZones.clear();
 
-    for (size_t i = 0; i < m_vCheckpointZones.length(); i++)
+    for (size_t i = 0; i < m_vCheckpointZones.size(); i++)
     {
-        for (size_t j = 0; j < m_vCheckpointZones[i].length(); j++)
+        for (size_t j = 0; j < m_vCheckpointZones[i].size(); j++)
         {
             delete m_vCheckpointZones[i][j];
         }
@@ -267,21 +267,21 @@ void CMapZones::PrintZones()
     rootconsole->ConsolePrint("----------------");
 
     rootconsole->ConsolePrint("Start Zones:");
-    for (size_t i = 0; i < m_vStartZones.length(); i++)
+    for (size_t i = 0; i < m_vStartZones.size(); i++)
     {
         rootconsole->ConsolePrint("%d:%p", i, m_vStartZones[i]->GetBaseEntity());
     }
 
     rootconsole->ConsolePrint("End Zones:");
-    for (size_t i = 0; i < m_vEndZones.length(); i++)
+    for (size_t i = 0; i < m_vEndZones.size(); i++)
     {
         rootconsole->ConsolePrint("%d:%p", i, m_vEndZones[i]->GetBaseEntity());
     }
 
     rootconsole->ConsolePrint("Checkpoint Zones:");
-    for (size_t i = 0; i < m_vCheckpointZones.length(); i++)
+    for (size_t i = 0; i < m_vCheckpointZones.size(); i++)
     {
-        for (size_t j = 0; j < m_vCheckpointZones[i].length(); j++)
+        for (size_t j = 0; j < m_vCheckpointZones[i].size(); j++)
             rootconsole->ConsolePrint("%d:%d:%p", i, j, m_vCheckpointZones[i][j]->GetBaseEntity());
     }
 }
@@ -319,20 +319,20 @@ CBaseZone *CMapZones::GetZone(ZoneType type, int track, int cpnum)
     switch (type)
     {
         case ZoneType::START:
-            if ((int) m_vStartZones.length() <= track)
+            if ((int) m_vStartZones.size() <= track)
                 return nullptr;
 
             return m_vStartZones[track];
         case ZoneType::END:
-            if ((int) m_vEndZones.length() <= track)
+            if ((int) m_vEndZones.size() <= track)
                 return nullptr;
 
             return m_vEndZones[track];
         case ZoneType::CHECKPOINT:
-            if ((int) m_vCheckpointZones.length() <= track)
+            if ((int) m_vCheckpointZones.size() <= track)
                 return nullptr;
 
-            if ((int) m_vCheckpointZones[track].length() < cpnum)
+            if ((int) m_vCheckpointZones[track].size() < cpnum)
                 return nullptr;
 
             return m_vCheckpointZones[track][cpnum - 1];
@@ -342,14 +342,14 @@ CBaseZone *CMapZones::GetZone(ZoneType type, int track, int cpnum)
 
 unsigned int CMapZones::GetTrackCount()
 {
-    return m_vStartZones.length();
+    return m_vStartZones.size();
 }
 
 unsigned int CMapZones::GetCPCount(unsigned int track)
 {
-    if (m_vCheckpointZones.length() <= track)
+    if (m_vCheckpointZones.size() <= track)
         return 0u;
-    return m_vCheckpointZones[track].length();
+    return m_vCheckpointZones[track].size();
 }
 
 static CMapZones _mapzones;

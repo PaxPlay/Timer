@@ -6,7 +6,7 @@
 class CVFuncs
 {
 public:
-    void TeleportEntity(CBaseEntity *pEntity, const Vector *pos, const Vector *ang, const Vector *vel);
+    void TeleportEntity(CBaseEntity *pEntity, const Vector *pos, const QAngle *ang, const Vector *vel);
 
 private:
     template < typename T1, typename ... T2>
