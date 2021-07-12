@@ -103,9 +103,9 @@ void CUtility::PrintGenericOptionToConsole(int client, const char *cmd, const ch
 void CUtility::GetTrackName(char *buffer, int maxlen, int track)
 {
     if (track == 0)
-        util->Format(buffer, maxlen, "%t", 1, "Main");
+        Format(buffer, maxlen, "%t", 1, "Main");
     else
-        util->Format(buffer, maxlen, "%t", 2, "Bonus", &track);
+        Format(buffer, maxlen, "%t", 2, "Bonus", &track);
 }
 
 void CUtility::FormatTime(char *buffer, int maxlen, float time, int precision)
@@ -153,18 +153,15 @@ int CUtility::EntPropDataOffset(CBaseEntity *pEntity, const char *prop)
     return pDesc->fieldOffset[TD_OFFSET_NORMAL];
 }
 
-int CUtility::EntPropSendOffset(CBaseEntity *pEntity, const char *prop)
+int CUtility::EntPropSendOffset(const char* classname, const char *prop)
 {
-    if (!pEntity || !prop || !prop[0])
+    if (!classname || !classname[0] || !prop || !prop[0])
         return 0;
 
-    const char* classname = gamehelpers->GetEntityClassname(pEntity);
-
-    if (!classname)
+    sm_sendprop_info_t sendprop_info;
+    
+    if (!gamehelpers->FindSendPropInfo(classname, prop, &sendprop_info))
         return 0;
-
-    return gamehelpers->GetSendPropOffset(gamehelpers->FindInSendTable(classname, prop));
+	
+    return sendprop_info.actual_offset;
 }
-
-static CUtility _util;
-CUtility *util = &_util;

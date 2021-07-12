@@ -110,7 +110,7 @@ void CEndZone::StartTouch(CBaseEntity *pOther)
     /*
     IPlayerInfo *playerinfo = client->GetGamePlayer()->GetPlayerInfo();
     Vector origin = playerinfo->GetAbsOrigin();
-    Vector velocity = *util->EntPropData<Vector>(pOther, "m_vecVelocity");
+    Vector velocity = *CUtility::EntPropData<Vector>(pOther, "m_vecVelocity");
     Vector previousOrigin = origin - velocity.Length() * globals->interval_per_tick;
     */
 
@@ -310,7 +310,7 @@ void CMapZones::TeleportEntityToZone(CBaseEntity *pEntity, ZoneType type, int tr
     CBaseEntity *pZoneEntity = pZone->GetBaseEntity();
 
     // TODO: this might teleport people into the ground
-    Vector origin = *util->EntPropData<Vector>(pZoneEntity, "m_vecOrigin");
+    Vector origin = *CUtility::EntPropData<Vector>(pZoneEntity, "m_vecOrigin");
     Vector vel = Vector{ 0.0f, 0.0f, 0.0f };
     vfuncs->TeleportEntity(pEntity, &origin, nullptr, &vel);
 }

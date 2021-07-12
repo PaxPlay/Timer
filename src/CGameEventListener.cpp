@@ -1,10 +1,10 @@
-#include "CGameEventManager.h"
+#include "CGameEventListener.h"
 #include "CTimerClients.h"
 #include "extension.h"
 
 #include <cstring>
 
-void CGameEventManager::FireGameEvent(IGameEvent *event)
+void CGameEventListener::FireGameEvent(IGameEvent *event)
 {
     const char *name = event->GetName();
 
@@ -12,12 +12,12 @@ void CGameEventManager::FireGameEvent(IGameEvent *event)
         player_jump(event->GetInt("userid", 0));
 }
 
-void CGameEventManager::player_jump(int userid)
+void CGameEventListener::player_jump(int userid)
 {
     CTimerClient *client = timerclients->GetClient(playerhelpers->GetClientOfUserId(userid));
 
     client->Jump();
 }
 
-static CGameEventManager _eventmanager;
-CGameEventManager *eventmanager = &_eventmanager;
+static CGameEventListener _eventmanager;
+CGameEventListener *eventmanager = &_eventmanager;

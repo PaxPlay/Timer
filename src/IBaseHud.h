@@ -5,17 +5,17 @@
 
 class CTimerClient;
 
-class CBaseHud
+class IBaseHud
 {
 public:
-    virtual ~CBaseHud() = default;
+    virtual ~IBaseHud() = default;
     virtual const char *GetName() = 0;
 
 public:
     virtual void DrawTimerInformation(CTimerClient *client) = 0;
 };
 
-class CBasicHud : public CBaseHud
+class CBasicHud : public IBaseHud
 {
 public:
     const char *GetName() override;

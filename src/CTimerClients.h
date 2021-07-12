@@ -2,7 +2,7 @@
 #define TIMER_CTIMERCLIENTS_H
 
 #include "extension.h"
-#include "CBaseHud.h"
+#include "IBaseHud.h"
 
 #include <shareddefs.h>
 
@@ -131,7 +131,7 @@ public:
      */
     CTimerClient *GetClient(CBaseEntity *pEntity);
 
-    bool RegisterHud(CBaseHud *hud);
+    bool RegisterHud(IBaseHud *hud);
 
     bool RemoveHud(const char *name);
 
@@ -141,7 +141,7 @@ public:
     ResultType OnTimer(ITimer *pTimer, void *pData) override;
     void OnTimerEnd(ITimer *pTimer, void *pData) override;
 private:
-    std::vector<CBaseHud *> m_vHuds;
+    std::vector<IBaseHud *> m_vHuds;
     CTimerClient *m_Clients[MAX_PLAYERS - 1];
 };
 

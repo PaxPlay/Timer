@@ -31,6 +31,8 @@ SH_DECL_MANUALHOOK1(OnTakeDamage, 0, 0, 0, int, const CTakeDamageInfo &);
 CTimerClient::CTimerClient(int index) :
         m_iIndex(index),
         m_pGamePlayer(nullptr),
+		m_pEdict(nullptr),
+		m_pEntity(nullptr),
         m_bRunning(false),
         m_iTrack(0),
         m_iCurrentCP(0),
@@ -80,7 +82,7 @@ void CTimerClient::PrintToChat(const char *format, int argc, ...)
     va_list list;
     va_start(list, argc);
 
-    util->PrintToChatVA(m_iIndex, format, argc, list);
+    CUtility::PrintToChatVA(m_iIndex, format, argc, list);
 }
 
 void CTimerClient::PrintToConsole(const char *format, int argc, ...)
@@ -88,7 +90,7 @@ void CTimerClient::PrintToConsole(const char *format, int argc, ...)
     va_list list;
     va_start(list, argc);
 
-    util->PrintToConsoleVA(m_iIndex, format, argc, list);
+    CUtility::PrintToConsoleVA(m_iIndex, format, argc, list);
 }
 
 bool CTimerClient::ToggleNoclip()
@@ -199,10 +201,10 @@ void CTimerClient::ReachCheckpoint(float time)
     smutils->SetGlobalTarget(m_iIndex);
 
     char sTrack[16];
-    util->GetTrackName(sTrack, 16, m_iTrack);
+    CUtility::GetTrackName(sTrack, 16, m_iTrack);
 
     char sTime[32];
-    util->FormatTime(sTime, 32, m_flTime);
+    CUtility::FormatTime(sTime, 32, m_flTime);
 
     PrintToChat("%t", 4, "Timer Checkpoint Reached", sTrack, &m_iCurrentCP, sTime);
 }
@@ -212,10 +214,10 @@ void CTimerClient::Finish()
     smutils->SetGlobalTarget(m_iIndex);
 
     char sTrack[16];
-    util->GetTrackName(sTrack, 16, m_iTrack);
+    CUtility::GetTrackName(sTrack, 16, m_iTrack);
 
     char sTime[32];
-    util->FormatTime(sTime, 32, m_flTime);
+    CUtility::FormatTime(sTime, 32, m_flTime);
 
     PrintToChat("%t", 3, "Timer Finished", sTrack, sTime);
 
@@ -227,12 +229,12 @@ void CTimerClient::OnClientPutInServer()
     m_pGamePlayer = playerhelpers->GetGamePlayer(m_iIndex);
     m_pEdict = gamehelpers->EdictOfIndex(m_iIndex);
     m_pEntity = m_pEdict->GetUnknown()->GetBaseEntity();
-
-    m_MoveType = util->EntPropData<MoveType_t>(m_pEntity, "m_MoveType");
-    m_vecVelocity = util->EntPropData<Vector>(m_pEntity, "m_vecVelocity");
-    m_flStamina = util->EntPropData<float>(m_pEntity, "m_flStamina");
-    m_fFlags = util->EntPropData<int>(m_pEntity, "m_fFlags");
-
+	
+    m_MoveType = CUtility::EntPropData<MoveType_t>(m_pEntity, "m_MoveType");
+    m_vecVelocity = CUtility::EntPropData<Vector>(m_pEntity, "m_vecVelocity");
+    m_flStamina = CUtility::EntPropSend<float>(m_pEntity, "CCSPlayer", "m_flStamina");
+    m_fFlags = CUtility::EntPropData<int>(m_pEntity, "m_fFlags");
+	
     SH_ADD_MANUALHOOK_MEMFUNC(PlayerRunCmd, m_pEntity, this, &CTimerClient::PlayerRunCmd, false);
     SH_ADD_MANUALHOOK_MEMFUNC(OnTakeDamage, m_pEntity, this, &CTimerClient::OnTakeDamage, false);
 }
@@ -244,7 +246,10 @@ void CTimerClient::PlayerRunCmd(CUserCmd *pCmd, IMoveHelper *movehelper)
 
 
     if (*m_fFlags & FL_ONGROUND)
+    {
         m_iTicksOnGround++;
+        *m_flStamina = 0.0f;
+    }
     else
         m_iTicksOnGround = 0;
 
@@ -358,7 +363,7 @@ CTimerClient *CTimerClients::GetClient(CBaseEntity *pEntity)
     return nullptr;
 }
 
-bool CTimerClients::RegisterHud(CBaseHud *hud)
+bool CTimerClients::RegisterHud(IBaseHud *hud)
 {
     for (size_t i = 0; i < m_vHuds.size(); i++)
     {

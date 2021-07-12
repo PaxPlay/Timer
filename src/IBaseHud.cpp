@@ -1,4 +1,4 @@
-#include "CBaseHud.h"
+#include "IBaseHud.h"
 #include "CTimerClients.h"
 #include "CUtility.h"
 #include "CMapZones.h"
@@ -20,7 +20,7 @@ void CBasicHud::DrawTimerInformation(CTimerClient *client)
     int track = client->GetCurrentTrack();
 
     char sTrack[16];
-    util->GetTrackName(sTrack, 16, track);
+    CUtility::GetTrackName(sTrack, 16, track);
 
     unsigned int iCP = client->GetCurrentCP();
     unsigned int iTotalCPs = mapzones->GetCPCount(track);
@@ -34,7 +34,7 @@ void CBasicHud::DrawTimerInformation(CTimerClient *client)
     if (client->IsRunning())
     {
         char sTime[32];
-        util->FormatTime(sTime, 32, client->GetCurrentTime(), 2);
+        CUtility::FormatTime(sTime, 32, client->GetCurrentTime(), 2);
 
         smutils->Format(msg, 253,
                         "%s\n"

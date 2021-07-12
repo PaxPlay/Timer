@@ -25,7 +25,7 @@ void CheckTrigger(void *userp)
 {
     auto *pEntity = reinterpret_cast<CBaseEntity *>(userp);
 
-    const char *name = *util->EntPropData<const char *>(pEntity, "m_iName");
+    const char *name = *CUtility::EntPropData<const char *>(pEntity, "m_iName");
 
     if (name && name[0]) {
         if (strncmp(name, "mod_zone_", 9) == 0) {

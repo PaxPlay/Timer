@@ -9,7 +9,7 @@
 #include "CRootConsoleCmds.h"
 #include "CMapZones.h"
 #include "CTimerClients.h"
-#include "CGameEventManager.h"
+#include "CGameEventListener.h"
 #include "CAssetManager.h"
 
 ISDKHooks *sdkhooks = nullptr;

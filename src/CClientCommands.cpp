@@ -91,7 +91,7 @@ void CClientCommands::ListCommands(CTimerClient *client)
     auto PrintOption = [&](const char *cmd, const char *text)
     {
         if (client)
-            util->PrintGenericOptionToConsole(client->GetIndex(), cmd, text);
+            CUtility::PrintGenericOptionToConsole(client->GetIndex(), cmd, text);
         else
             rootconsole->DrawGenericOption(cmd, text);
     };
