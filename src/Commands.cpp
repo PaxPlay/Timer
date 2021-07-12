@@ -4,7 +4,11 @@
 #include "CMapZones.h"
 #include "CUtility.h"
 #include "CAssetManager.h"
+#include "CTempEnts.h"
 #include "CVFuncs.h"
+
+#include <iplayerinfo.h>
+#include <iserver.h>
 
 ///////////////////////////////////////////////////////////////////////////
 // help
@@ -95,4 +99,51 @@ CLIENT_COMMAND_ALIAS(bonus, track);
 CLIENT_COMMAND(nc, "Noclip.")
 {
     client->ToggleNoclip();
+}
+
+class BasicRecipientFilter : public IRecipientFilter
+{
+private:
+    int ent = -1;
+public:
+    BasicRecipientFilter(int ent)
+    {
+        this->ent = ent;
+    }
+	
+	bool IsInitMessage() const override
+	{
+        return false;
+	}
+	
+	bool IsReliable() const override
+	{
+        return false;
+	}
+
+	int GetRecipientCount() const override
+	{
+        return 1;
+	}
+
+	int GetRecipientIndex(int slot) const override
+	{
+        if (slot == 0)
+            return ent;
+        return -1;
+	}
+
+};
+
+CLIENT_COMMAND(beam, "Draw a beam from the player's head in the direction he's looking.")
+{
+    Vector pos;
+    gameclients->ClientEarPosition(client->GetEdict(), &pos);
+    QAngle ang = vfuncs->EyeAngles(client->GetBaseEntity());
+    Vector normal{ cosf(ang.y * M_PI/180), sinf(ang.y * M_PI / 180), sinf(-ang.x * M_PI / 180) };
+    BasicRecipientFilter filter{ client->GetIndex() };
+    CTempEnts::Beam(filter, 0.0, pos, pos + 100.0f * normal,
+        assetmanager->getBeam(), assetmanager->getHalo(),
+        0, 0, 10.0f, 5.0f, 5.0f, 0.0f, 0.0f,
+        70, 255, 255, 255, 0);
 }
