@@ -22,6 +22,8 @@ sourceFiles = [
   'CClientCommands.cpp',
   'Commands.cpp',
   'CAssetManager.cpp',
+  'CBasicRestrictiveStyle.cpp',
+  'CStyleManager.cpp',
 ]
 
 includeDirectorys = [

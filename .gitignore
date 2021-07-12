@@ -16,3 +16,6 @@ Debug/*
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
+
+# Windows Stuff
+windows-scripts/*

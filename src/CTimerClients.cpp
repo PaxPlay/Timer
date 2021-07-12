@@ -3,6 +3,7 @@
 #include "CUtility.h"
 #include "CVFuncs.h"
 #include "CClientCommands.h"
+#include "CStyleManager.h"
 
 #include <cstdarg>
 #include <shareddefs.h>
@@ -37,6 +38,7 @@ CTimerClient::CTimerClient(int index) :
         m_iTrack(0),
         m_iCurrentCP(0),
         m_flTime(0.0f),
+		m_pSelectedStyle(styles->getDefaultStyle()),
         m_iHudIndex(0),
         m_bBhopBlocked(false),
         m_iTicksOnGround(0)
@@ -186,9 +188,14 @@ float CTimerClient::GetCurrentTime()
     return m_flTime;
 }
 
-int CTimerClient::GetSelectedHud()
+int CTimerClient::GetSelectedHud() const
 {
     return m_iHudIndex;
+}
+
+IStyle *CTimerClient::GetSelectedStyle() const
+{
+    return m_pSelectedStyle;
 }
 
 void CTimerClient::BlockBhop(bool block)
@@ -241,22 +248,15 @@ void CTimerClient::OnClientPutInServer()
 
 void CTimerClient::PlayerRunCmd(CUserCmd *pCmd, IMoveHelper *movehelper)
 {
-    if (pCmd->buttons & IN_JUMP && !(*m_fFlags & FL_ONGROUND))
-        pCmd->buttons &= ~IN_JUMP;
-
-
     if (*m_fFlags & FL_ONGROUND)
-    {
         m_iTicksOnGround++;
-        *m_flStamina = 0.0f;
-    }
     else
         m_iTicksOnGround = 0;
+	
+    m_pSelectedStyle->PlayerRunCmd(this, pCmd, movehelper);
 
     if (m_bBhopBlocked && m_iTicksOnGround < 10)
-    {
         pCmd->buttons &= ~IN_JUMP;
-    }
 }
 
 int CTimerClient::OnTakeDamage(const CTakeDamageInfo &info)
@@ -301,6 +301,13 @@ Vector CTimerClient::GetVelocity()
 int CTimerClient::GetFlags()
 {
     return *m_fFlags;
+}
+
+void CTimerClient::SetStamina(float value)
+{
+    if (!m_flStamina)
+        return;
+    *m_flStamina = value;
 }
 
 bool CTimerClients::CreateClient(int index) {

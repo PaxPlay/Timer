@@ -3,6 +3,7 @@
 
 #include "extension.h"
 #include "IBaseHud.h"
+#include "IStyle.h"
 
 #include <shareddefs.h>
 
@@ -51,7 +52,8 @@ public: // Timer stuff
     int GetCurrentCP();
     float GetCurrentTime();
 
-    int GetSelectedHud();
+    int GetSelectedHud() const;
+    IStyle *GetSelectedStyle() const;
 
     void BlockBhop(bool block);
 private:
@@ -77,7 +79,8 @@ private:
     int m_iTrack;
     int m_iCurrentCP;
     float m_flTime;
-
+    IStyle *m_pSelectedStyle;
+	
     // settings
     int m_iHudIndex;
 
@@ -89,6 +92,7 @@ public:
     // get some ent props
     Vector GetVelocity();
     int GetFlags();
+    void SetStamina(float value);
 
 private:
     // ent props
