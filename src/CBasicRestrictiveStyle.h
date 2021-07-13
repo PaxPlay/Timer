@@ -12,17 +12,17 @@ public:
 	CBasicRestrictiveStyle(const std::string& name, const std::string& short_name);
 	~CBasicRestrictiveStyle() override;
 
-	bool setOption(const char* option, const char* value) override;
-	bool setSubOption(const char* option, const char* sub_option, const char* value) override;
+	bool SetOption(const char* option, const char* value) override;
+	bool SetSubOption(const char* option, const char* sub_option, const char* value) override;
 	
-	std::string getName() const override;
-	std::string getShortName() const override;
+	std::string GetName() const override;
+	std::string GetShortName() const override;
 
-	bool shouldSaveReplays() const override;
-	bool shouldSaveSegmentedReplays() const override;
+	bool ShouldSaveReplays() const override;
+	bool ShouldSaveSegmentedReplays() const override;
 
-	bool shouldAllowTas() const override;
-	bool shouldSaveTasReplays() const override;
+	bool ShouldAllowTas() const override;
+	bool ShouldSaveTasReplays() const override;
 
 	void PlayerRunCmd(CTimerClient* client, CUserCmd* pCmd, IMoveHelper* movehelper) override;
 private:

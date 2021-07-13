@@ -40,7 +40,7 @@ CTimerClient::CTimerClient(int index) :
         m_iTrack(0),
         m_iCurrentCP(0),
         m_flTime(0.0f),
-		m_pSelectedStyle(styles->getDefaultStyle()),
+		m_pSelectedStyle(styles->GetDefaultStyle()),
         m_iHudIndex(0),
         m_bBhopBlocked(false),
         m_iTicksOnGround(0)

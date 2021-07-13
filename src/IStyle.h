@@ -11,17 +11,17 @@ public:
 	virtual ~IStyle() {};
 
 public:
-	virtual std::string getName() const = 0;
-	virtual std::string getShortName() const = 0;
+	virtual std::string GetName() const = 0;
+	virtual std::string GetShortName() const = 0;
 
-	virtual bool setOption(const char* option, const char* value) = 0;
-	virtual bool setSubOption(const char* option, const char* sub_option, const char* value) = 0;
+	virtual bool SetOption(const char* option, const char* value) = 0;
+	virtual bool SetSubOption(const char* option, const char* sub_option, const char* value) = 0;
 	
-	virtual bool shouldSaveReplays() const = 0;
-	virtual bool shouldSaveSegmentedReplays() const = 0;
+	virtual bool ShouldSaveReplays() const = 0;
+	virtual bool ShouldSaveSegmentedReplays() const = 0;
 	
-	virtual bool shouldAllowTas() const = 0;
-	virtual bool shouldSaveTasReplays() const = 0;
+	virtual bool ShouldAllowTas() const = 0;
+	virtual bool ShouldSaveTasReplays() const = 0;
 
 public:
 	virtual void PlayerRunCmd(CTimerClient* client, CUserCmd* pCmd, IMoveHelper* movehelper) = 0;

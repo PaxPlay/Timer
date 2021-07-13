@@ -13,11 +13,11 @@ class CStyleManager
 {
 public:
 	~CStyleManager();
-	void parseStyles();
+	void ParseStyles();
 	
-	size_t getNumStyles() const;
-	IStyle *getStyle(size_t n) const;
-	IStyle* getDefaultStyle() const;
+	size_t GetNumStyles() const;
+	IStyle *GetStyle(size_t n) const;
+	IStyle* GetDefaultStyle() const;
 private:
 	class CSMCTextParser : public SourceMod::ITextListener_SMC
 	{

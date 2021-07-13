@@ -10,7 +10,7 @@ CStyleManager::~CStyleManager()
 	}
 }
 
-void CStyleManager::parseStyles()
+void CStyleManager::ParseStyles()
 {
 	char path[PLATFORM_MAX_PATH];
 	smutils->BuildPath(Path_SM, path, sizeof(path), "configs/timer-styles.cfg");
@@ -35,17 +35,17 @@ void CStyleManager::parseStyles()
 	}
 }
 
-size_t CStyleManager::getNumStyles() const
+size_t CStyleManager::GetNumStyles() const
 {
 	return m_vStyles.size();
 }
 
-IStyle* CStyleManager::getStyle(size_t n) const
+IStyle* CStyleManager::GetStyle(size_t n) const
 {
 	return m_vStyles[n];
 }
 
-IStyle* CStyleManager::getDefaultStyle() const
+IStyle* CStyleManager::GetDefaultStyle() const
 {
 	return m_vStyles[m_iDefaultStyle];
 }
@@ -82,9 +82,9 @@ SourceMod::SMCResult CStyleManager::CSMCTextParser::ReadSMC_KeyValue(const Sourc
 	switch (m_ParseStack.size())
 	{
 	case 2:
-		return m_pCurrentStyle->setOption(key, value) ? SMCResult_Continue : SMCResult_HaltFail;
+		return m_pCurrentStyle->SetOption(key, value) ? SMCResult_Continue : SMCResult_HaltFail;
 	case 3:
-		return m_pCurrentStyle->setSubOption(m_ParseStack.top().c_str(),key, value)
+		return m_pCurrentStyle->SetSubOption(m_ParseStack.top().c_str(),key, value)
 			? SMCResult_Continue : SMCResult_HaltFail;
 	default:
 		return SMCResult_HaltFail;
@@ -100,7 +100,7 @@ SourceMod::SMCResult CStyleManager::CSMCTextParser::ReadSMC_LeavingSection(const
 	case 2:
 		if (m_pCurrentStyle == nullptr)
 			return SMCResult_HaltFail;
-		if (m_pCurrentStyle->getName().empty() || m_pCurrentStyle->getShortName().empty())
+		if (m_pCurrentStyle->GetName().empty() || m_pCurrentStyle->GetShortName().empty())
 		{
 			delete m_pCurrentStyle;
 			m_pCurrentStyle = nullptr;

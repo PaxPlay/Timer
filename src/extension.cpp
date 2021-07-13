@@ -80,7 +80,7 @@ bool TimerExtension::SDK_OnLoad(char *error, size_t maxlength, bool late)
     icvar->FindVar("sv_airaccelerate")->SetValue(1000);
 
     assetmanager->precache();
-    styles->parseStyles();
+    styles->ParseStyles();
 	
 	return true;
 }

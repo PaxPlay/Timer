@@ -75,10 +75,10 @@ CLIENT_COMMAND_ALIAS(bonus, track);
 static CMenuHandler s_StyleMenuHandler
 {[](IBaseMenu* menu, CTimerClient* client, unsigned int item)
 {
-    if (item >= styles->getNumStyles())
+    if (item >= styles->GetNumStyles())
         return;
 
-    client->SetStyle(styles->getStyle(item));
+    client->SetStyle(styles->GetStyle(item));
 }};
 
 CLIENT_COMMAND(style, "Select a style")
@@ -93,10 +93,10 @@ CLIENT_COMMAND(style, "Select a style")
 
     menu->SetPagination(6);
 
-    for (unsigned int i = 0; i < styles->getNumStyles(); i++)
+    for (unsigned int i = 0; i < styles->GetNumStyles(); i++)
     {
-        IStyle* style = styles->getStyle(i);
-        menu->AppendItem(style->getShortName().c_str(), ItemDrawInfo(style->getName().c_str()));
+        IStyle* style = styles->GetStyle(i);
+        menu->AppendItem(style->GetShortName().c_str(), ItemDrawInfo(style->GetName().c_str()));
     }
 
     menu->Display(client->GetIndex(), MENU_TIME_FOREVER);
@@ -106,7 +106,7 @@ CLIENT_COMMAND_ALIAS(mode, style);
 
 CLIENT_COMMAND(cstyle, "Get your current style")
 {
-    client->PrintToChat("Your current style is %s", 1, client->GetSelectedStyle()->getName().c_str());
+    client->PrintToChat("Your current style is %s", 1, client->GetSelectedStyle()->GetName().c_str());
 }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -26,7 +26,7 @@ CBasicRestrictiveStyle::~CBasicRestrictiveStyle()
 {
 }
 
-bool CBasicRestrictiveStyle::setOption(const char* option, const char* value)
+bool CBasicRestrictiveStyle::SetOption(const char* option, const char* value)
 {
 	if (std::string("name") == option)
 	{
@@ -70,7 +70,7 @@ bool CBasicRestrictiveStyle::setOption(const char* option, const char* value)
 	return false;
 }
 
-bool CBasicRestrictiveStyle::setSubOption(const char* option, const char* sub_option, const char* value)
+bool CBasicRestrictiveStyle::SetSubOption(const char* option, const char* sub_option, const char* value)
 {
 	if (std::string("restrictions") == option)
 	{
@@ -109,32 +109,32 @@ bool CBasicRestrictiveStyle::setSubOption(const char* option, const char* sub_op
 	return false;
 }
 
-std::string CBasicRestrictiveStyle::getName() const
+std::string CBasicRestrictiveStyle::GetName() const
 {
 	return m_sName;
 }
 
-std::string CBasicRestrictiveStyle::getShortName() const
+std::string CBasicRestrictiveStyle::GetShortName() const
 {
 	return m_sShortName;
 }
 
-bool CBasicRestrictiveStyle::shouldSaveReplays() const
+bool CBasicRestrictiveStyle::ShouldSaveReplays() const
 {
 	return m_bSaveReplays;
 }
 
-bool CBasicRestrictiveStyle::shouldSaveSegmentedReplays() const
+bool CBasicRestrictiveStyle::ShouldSaveSegmentedReplays() const
 {
 	return m_bSaveSegmentedReplays;
 }
 
-bool CBasicRestrictiveStyle::shouldAllowTas() const
+bool CBasicRestrictiveStyle::ShouldAllowTas() const
 {
 	return m_bAllowTas;
 }
 
-bool CBasicRestrictiveStyle::shouldSaveTasReplays() const
+bool CBasicRestrictiveStyle::ShouldSaveTasReplays() const
 {
 	return m_bSaveTasReplays;
 }
