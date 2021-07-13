@@ -322,6 +322,14 @@ void CTimerClient::SetStamina(float value)
     *m_flStamina = value;
 }
 
+int CTimerClient::GetTicksOnGround()
+{
+    if (*m_fFlags & FL_ONGROUND)
+		return m_iTicksOnGround;
+
+	return -1;
+}
+
 bool CTimerClients::CreateClient(int index) {
     if (m_Clients[index - 1])
         return false;

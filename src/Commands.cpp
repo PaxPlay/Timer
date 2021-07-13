@@ -96,13 +96,18 @@ CLIENT_COMMAND(style, "Select a style")
     for (unsigned int i = 0; i < styles->getNumStyles(); i++)
     {
         IStyle* style = styles->getStyle(i);
-        menu->AppendItem(style->getShortName(), ItemDrawInfo(style->getName()));
+        menu->AppendItem(style->getShortName().c_str(), ItemDrawInfo(style->getName().c_str()));
     }
 
     menu->Display(client->GetIndex(), MENU_TIME_FOREVER);
 }
 
 CLIENT_COMMAND_ALIAS(mode, style);
+
+CLIENT_COMMAND(cstyle, "Get your current style")
+{
+    client->PrintToChat("Your current style is %s", 1, client->GetSelectedStyle()->getName().c_str());
+}
 
 ///////////////////////////////////////////////////////////////////////////
 // noclip

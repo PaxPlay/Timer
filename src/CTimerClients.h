@@ -97,10 +97,10 @@ private:
     unsigned int m_iTicksOnGround;
 
 public:
-    // get some ent props
     Vector GetVelocity();
     int GetFlags();
     void SetStamina(float value);
+    int GetTicksOnGround();
 
 private:
     // ent props

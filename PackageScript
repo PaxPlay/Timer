@@ -11,7 +11,7 @@ folder_list = [
   'addons/sourcemod/translations',
   #'addons/sourcemod/scripting/include',
   #'addons/sourcemod/gamedata',
-  #'addons/sourcemod/configs',
+  'addons/sourcemod/configs',
 ]
 
 # Create the distribution folder hierarchy.
@@ -47,11 +47,9 @@ CopyFiles('translations', 'addons/sourcemod/translations',
 #)
 
 # Config Files
-#CopyFiles('configs', 'addons/sourcemod/configs',
-#  [ 'configfile.cfg',
-#  'otherconfig.cfg,
-#  ]
-#)
+CopyFiles('configs', 'addons/sourcemod/configs',
+  [ 'timer-styles.cfg' ]
+)
 
 # Copy binaries.
 for cxx_task in Extension.extensions:

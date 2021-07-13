@@ -8,11 +8,15 @@
 class CBasicRestrictiveStyle : public IStyle
 {
 public:
+	CBasicRestrictiveStyle();
 	CBasicRestrictiveStyle(const std::string& name, const std::string& short_name);
 	~CBasicRestrictiveStyle() override;
+
+	bool setOption(const char* option, const char* value) override;
+	bool setSubOption(const char* option, const char* sub_option, const char* value) override;
 	
-	const char* getName() const override;
-	const char* getShortName() const override;
+	std::string getName() const override;
+	std::string getShortName() const override;
 
 	bool shouldSaveReplays() const override;
 	bool shouldSaveSegmentedReplays() const override;
@@ -30,6 +34,8 @@ private:
 	bool m_bSaveTasReplays;
 	bool m_bAutoHop;
 	bool m_bStamina;
+	bool m_bBlockOnGround;
+	int m_fBlockedKeys;
 };
 
 #endif // !TIMER_CBASICRESTRICTIVESTYLE_H

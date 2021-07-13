@@ -11,9 +11,12 @@ public:
 	virtual ~IStyle() {};
 
 public:
-	virtual const char* getName() const = 0;
-	virtual const char* getShortName() const = 0;
+	virtual std::string getName() const = 0;
+	virtual std::string getShortName() const = 0;
 
+	virtual bool setOption(const char* option, const char* value) = 0;
+	virtual bool setSubOption(const char* option, const char* sub_option, const char* value) = 0;
+	
 	virtual bool shouldSaveReplays() const = 0;
 	virtual bool shouldSaveSegmentedReplays() const = 0;
 	
