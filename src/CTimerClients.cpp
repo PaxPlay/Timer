@@ -25,6 +25,8 @@
 #include <server_class.h>
 #include <takedamageinfo.h>
 
+#include "CMapZones.h"
+
 
 SH_DECL_MANUALHOOK2_void(PlayerRunCmd, 0, 0, 0, CUserCmd *, IMoveHelper *);
 SH_DECL_MANUALHOOK1(OnTakeDamage, 0, 0, 0, int, const CTakeDamageInfo &);
@@ -196,6 +198,16 @@ int CTimerClient::GetSelectedHud() const
 IStyle *CTimerClient::GetSelectedStyle() const
 {
     return m_pSelectedStyle;
+}
+
+void CTimerClient::SetStyle(IStyle* style)
+{
+	if (style && style != m_pSelectedStyle)
+	{
+        StopTimer(false, m_iTrack);
+        mapzones->TeleportEntityToZone(m_pEntity, ZoneType::START, m_iTrack);
+        m_pSelectedStyle = style;
+	}
 }
 
 void CTimerClient::BlockBhop(bool block)

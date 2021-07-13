@@ -32,4 +32,9 @@
     {
         "en"            "Select a track."
     }
+
+    "Menu Style Title"
+    {
+        "en"            "Select a style."
+    }
 }

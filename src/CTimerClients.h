@@ -55,6 +55,14 @@ public: // Timer stuff
     int GetSelectedHud() const;
     IStyle *GetSelectedStyle() const;
 
+	/**
+	 * Set the selected style of a player. Automatically stops the timer and teleports the player to the
+	 * start zone if the style differs from the currently selected one.
+	 *
+	 * @param style         IStyle pointer.
+	 */
+    void SetStyle(IStyle* style);
+
     void BlockBhop(bool block);
 private:
     void ReachCheckpoint(float time);
