@@ -126,11 +126,7 @@ void CTimerClient::StartTimer(int track)
     if (*m_MoveType == MOVETYPE_NOCLIP)
         return;
 
-    if (m_vecVelocity->Length2DSqr() > 290.0f * 290.0f)
-    {
-        Vector newVel(0.0f, 0.0f, 0.0f);
-        vfuncs->TeleportEntity(m_pEntity, nullptr, nullptr, &newVel);
-    }
+    LimitVelocity(290);
 
     m_iTrack = track;
     m_iCurrentCP = 0;
@@ -243,6 +239,15 @@ void CTimerClient::Finish()
     smutils->LogMessage(myself, "[%s] %s finished with a time of %s.", sTrack, m_pGamePlayer->GetName(), sTime);
 }
 
+void CTimerClient::LimitVelocity(float vel)
+{
+    if (m_vecVelocity->Length2DSqr() > vel * vel)
+    {
+        Vector newVel = *m_vecVelocity * (vel / (2 * m_vecVelocity->Length()));
+        vfuncs->TeleportEntity(m_pEntity, nullptr, nullptr, &newVel);
+    }
+}
+
 void CTimerClient::OnClientPutInServer()
 {
     m_pGamePlayer = playerhelpers->GetGamePlayer(m_iIndex);
@@ -280,15 +285,8 @@ void CTimerClient::Jump()
 {
     if (m_bBhopBlocked)
     {
-        if (m_vecVelocity->Length2DSqr() > 290 * 290)
-        {
-            Vector vel(0.0f, 0.0f, 0.0f);
-            vfuncs->TeleportEntity(m_pEntity, nullptr, nullptr, &vel);
-            return;
-        }
+        LimitVelocity(290);
     }
-
-    *m_flStamina = 0.0f;
 }
 
 void CTimerClient::GameFrame()
@@ -357,10 +355,10 @@ void GameFrame(bool simulating)
     if (!simulating)
         return;
 
-    for (int i = 1; i <= MAX_PLAYERS; i++)
+    for (int i = 1; i < MAX_PLAYERS; i++)
     {
         CTimerClient *client = timerclients->GetClient(i);
-        if (client)
+        if (client && client->IsInGame())
         {
             client->GameFrame();
         }
@@ -414,6 +412,14 @@ bool CTimerClients::RemoveHud(const char *name)
         }
     }
     return false;
+}
+
+CTimerClients::CTimerClients()
+{
+	for (auto &d : m_Clients)
+	{
+        d = nullptr;
+	}
 }
 
 CTimerClients::~CTimerClients()

@@ -307,6 +307,8 @@ void CMapZones::ReconfigureHooks()
 void CMapZones::TeleportEntityToZone(CBaseEntity *pEntity, ZoneType type, int track, int cpnum)
 {
     CBaseZone *pZone = GetZone(type, track, cpnum);
+    if (!pZone)
+        return;
     CBaseEntity *pZoneEntity = pZone->GetBaseEntity();
 
     // TODO: this might teleport people into the ground

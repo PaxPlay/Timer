@@ -23,8 +23,13 @@ void CHookManager::RemoveHooks()
 
 void CheckTrigger(void *userp)
 {
-    auto *pEntity = reinterpret_cast<CBaseEntity *>(userp);
-
+    // convert to reference and back to avoid accessing a deleted entity
+    int* pEntityReference = static_cast<int*>(userp);
+    auto *pEntity = gamehelpers->ReferenceToEntity(*pEntityReference);
+	
+    if (!pEntity)
+        return;
+	
     const char *name = *CUtility::EntPropData<const char *>(pEntity, "m_iName");
 
     if (name && name[0]) {
@@ -32,13 +37,15 @@ void CheckTrigger(void *userp)
             mapzones->RegisterZone(pEntity, name);
         }
     }
+	
+    delete pEntityReference;
 }
 
 void CHookManager::OnEntityCreated(CBaseEntity *pEntity, const char *classname)
 {
     if (strcmp(classname, "trigger_multiple") == 0)
     {
-        smutils->AddFrameAction(CheckTrigger, pEntity);
+        smutils->AddFrameAction(CheckTrigger, new int(gamehelpers->EntityToReference(pEntity)));
     }
 }
 

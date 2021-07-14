@@ -67,6 +67,7 @@ public: // Timer stuff
 private:
     void ReachCheckpoint(float time);
     void Finish();
+    void LimitVelocity(float vel);
 
 public: // Hooks
     void OnClientPutInServer();
@@ -113,6 +114,7 @@ private:
 class CTimerClients : public ITimedEvent
 {
 public:
+    CTimerClients();
     ~CTimerClients();
 
     /**
@@ -154,7 +156,7 @@ public:
     void OnTimerEnd(ITimer *pTimer, void *pData) override;
 private:
     std::vector<IBaseHud *> m_vHuds;
-    CTimerClient *m_Clients[MAX_PLAYERS - 1];
+    CTimerClient *m_Clients[MAX_PLAYERS];
 };
 
 extern CTimerClients *timerclients;
